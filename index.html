@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAG RPG Phase 2 - Temporal Mechanics Visualizer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f2040 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff6b6b, #ffa502, #7bed9f, #70a1ff, #a55eea);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.connected {
+            background: #7bed9f;
+            box-shadow: 0 0 8px #7bed9f;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.disconnected {
+            background: #ff6b6b;
+            box-shadow: 0 0 8px #ff6b6b;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.9); }
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Custom Scrollbars (WebKit and Firefox) */
+        * { scrollbar-width: thin; scrollbar-color: #70a1ff rgba(255,255,255,0.03); }
+
+        /* WebKit browsers */
+        .left-sidebar::-webkit-scrollbar,
+        .controls-panel::-webkit-scrollbar,
+        .stats-panel::-webkit-scrollbar,
+        #historyBars::-webkit-scrollbar,
+        .recently-list::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        .left-sidebar::-webkit-scrollbar-track,
+        .controls-panel::-webkit-scrollbar-track,
+        .stats-panel::-webkit-scrollbar-track,
+        #historyBars::-webkit-scrollbar-track,
+        .recently-list::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+        }
+
+        .left-sidebar::-webkit-scrollbar-thumb,
+        .controls-panel::-webkit-scrollbar-thumb,
+        .stats-panel::-webkit-scrollbar-thumb,
+        #historyBars::-webkit-scrollbar-thumb,
+        .recently-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #70a1ff, #5a8dee);
+            border-radius: 8px;
+            border: 3px solid rgba(10,10,20,0.4);
+        }
+
+        .left-sidebar::-webkit-scrollbar-thumb:hover,
+        .controls-panel::-webkit-scrollbar-thumb:hover,
+        .stats-panel::-webkit-scrollbar-thumb:hover {
+            filter: brightness(1.05);
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* LEFT SIDEBAR: Tags & Recently States                        */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .left-sidebar {
+            width: 220px;
+            background: rgba(0, 0, 0, 0.4);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(112, 161, 255, 0.2);
+            color: #70a1ff;
+            border: 1px solid rgba(112, 161, 255, 0.3);
+        }
+
+        .tag-badge.equipment {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border-color: rgba(255, 193, 7, 0.3);
+        }
+
+        .tag-badge.aura {
+            background: rgba(165, 94, 234, 0.2);
+            color: #a55eea;
+            border-color: rgba(165, 94, 234, 0.3);
+        }
+
+        .no-tags {
+            color: #555;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        /* Recently States */
+        .recently-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .recently-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s;
+        }
+
+        .recently-item.active {
+            background: rgba(255, 107, 107, 0.15);
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .recently-name {
+            font-size: 12px;
+        }
+
+        .recently-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .recently-status.yes {
+            background: rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+
+        .recently-status.no {
+            color: #555;
+        }
+
+        /* History Nodes Decay */
+        .history-item {
+            margin-bottom: 10px;
+        }
+
+        .history-label {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .history-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa502);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* CENTER: Graph Container                                      */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        #graph-container {
+            flex: 1;
+            position: relative;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .legend {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+        }
+
+        .legend-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .legend-dot.base { background: #4a5568; }
+        .legend-dot.clean { background: #38a169; }
+        .legend-dot.dirty { background: #e53e3e; }
+        .legend-dot.history { background: #805ad5; }
+
+        /* Edge Legend */
+        .edge-legend {
+            position: absolute;
+            top: 15px;
+            right: 330px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+        }
+
+        .edge-sample {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+        }
+
+        .edge-line {
+            width: 40px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .edge-line.normal { background: rgba(255,255,255,0.4); }
+        .edge-line.active { background: #70a1ff; }
+        .edge-line.inactive { 
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255,100,100,0.5),
+                rgba(255,100,100,0.5) 4px,
+                transparent 4px,
+                transparent 8px
+            );
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* RIGHT PANEL: Tabs & Controls                                 */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .right-panel {
+            width: 580px;
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+        }
+
+        .panel-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .panel-column:first-child {
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+            font-weight: 600;
+            color: #70a1ff;
+        }
+
+        /* Stats Panel (inside tab) */
+        .stats-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .control-section {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .control-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        /* Sliders */
+        .slider-control {
+            margin-bottom: 12px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .slider-value {
+            font-family: 'Consolas', monospace;
+            color: #70a1ff;
+            font-weight: 600;
+        }
+
+        .attr-slider, .dmg-slider, .speed-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .attr-slider::-webkit-slider-thumb,
+        .dmg-slider::-webkit-slider-thumb,
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .attr-slider::-webkit-slider-thumb:hover,
+        .dmg-slider::-webkit-slider-thumb:hover,
+        .speed-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .attr-slider.str::-webkit-slider-thumb { background: #ff6b6b; box-shadow: 0 0 8px #ff6b6b; }
+        .attr-slider.dex::-webkit-slider-thumb { background: #7bed9f; box-shadow: 0 0 8px #7bed9f; }
+        .attr-slider.int::-webkit-slider-thumb { background: #70a1ff; box-shadow: 0 0 8px #70a1ff; }
+        .dmg-slider::-webkit-slider-thumb { background: #ffa502; box-shadow: 0 0 8px #ffa502; }
+        .speed-slider::-webkit-slider-thumb { background: #a55eea; box-shadow: 0 0 8px #a55eea; }
+
+        /* Action Buttons */
+        .button-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .button-row.damage-types {
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .action-btn.crit {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+        }
+        .action-btn.block {
+            background: linear-gradient(135deg, #70a1ff, #5a8dee);
+        }
+        .action-btn.fire {
+            background: linear-gradient(135deg, #ff7f50, #ff6347);
+        }
+        .action-btn.cold {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+        }
+        .action-btn.phys {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+        }
+        .action-btn.onslaught {
+            background: linear-gradient(135deg, #ffa502, #ff7f00);
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Specific styles for Reset/Spread layout buttons */
+        #btn-reset-layout {
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            color: #e6eef8;
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+        }
+
+        #btn-reset-layout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+        }
+
+        #btn-spread {
+            background: linear-gradient(135deg, #ffa502, #ff7f00);
+            color: #1b1020;
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(255,125,0,0.12);
+        }
+
+        #btn-spread:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255,125,0,0.2);
+        }
+
+        /* Toggle Items */
+        .toggle-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-wrap: wrap;
+        }
+
+        .toggle-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .toggle-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #7bed9f;
+            cursor: pointer;
+        }
+
+        .toggle-label {
+            font-size: 12px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .toggle-hint {
+            font-size: 10px;
+            color: #666;
+            width: 100%;
+            margin-left: 28px;
+            margin-top: 2px;
+        }
+
+        .toggle-item.aura .toggle-hint {
+            color: #a55eea;
+        }
+
+        /* Console Input */
+        .console-input {
+            display: flex;
+            gap: 8px;
+        }
+
+        .console-input input {
+            flex: 1;
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            font-family: 'Consolas', monospace;
+        }
+
+        .console-input input:focus {
+            outline: none;
+            border-color: #70a1ff;
+        }
+
+        .console-input input::placeholder {
+            color: #555;
+        }
+
+        .send-btn {
+            padding: 10px 16px;
+            background: #70a1ff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #5a8dee;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* Stats Panel Sections                                         */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .stats-section {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stats-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-icon {
+            font-size: 14px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            margin: 4px 0;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-item.dirty {
+            background: rgba(229, 62, 62, 0.15);
+            border-left-color: #e53e3e;
+        }
+
+        .stat-item.base {
+            border-left-color: #4a5568;
+        }
+
+        .stat-item.derived {
+            border-left-color: #38a169;
+        }
+
+        .stat-item.history {
+            border-left-color: #805ad5;
+        }
+
+        .stat-name {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            color: #70a1ff;
+        }
+
+        .stat-value.positive {
+            color: #7bed9f;
+        }
+
+        .stat-value.negative {
+            color: #ff6b6b;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* Graph Node Styles                                            */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            stroke-width: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .node.base circle {
+            fill: #2d3748;
+            stroke: #4a5568;
+        }
+
+        .node.clean circle {
+            fill: #276749;
+            stroke: #38a169;
+        }
+
+        .node.dirty circle {
+            fill: #9b2c2c;
+            stroke: #e53e3e;
+            animation: dirtyPulse 0.6s ease-in-out infinite;
+        }
+
+        .node.history circle {
+            fill: #553c9a;
+            stroke: #805ad5;
+        }
+
+        .node.history.decaying circle {
+            animation: decayPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes dirtyPulse {
+            0%, 100% { 
+                filter: drop-shadow(0 0 6px #e53e3e);
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 15px #e53e3e);
+                transform: scale(1.03);
+            }
+        }
+
+        @keyframes decayPulse {
+            0%, 100% { filter: drop-shadow(0 0 5px #805ad5); }
+            50% { filter: drop-shadow(0 0 12px #805ad5); }
+        }
+
+        .node-label {
+            font-size: 11px;
+            font-weight: 600;
+            fill: white;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+        }
+
+        .node-value {
+            font-size: 10px;
+            fill: #ddd;
+            text-anchor: middle;
+            pointer-events: none;
+            font-family: 'Consolas', monospace;
+        }
+
+        .node-category {
+            font-size: 8px;
+            fill: #888;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* Edge Styles                                                  */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .link {
+            stroke: rgba(255, 255, 255, 0.25);
+            stroke-width: 2px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link.active {
+            stroke: #70a1ff;
+            stroke-width: 2.5px;
+            marker-end: url(#arrowhead-active);
+        }
+
+        .link.inactive {
+            stroke: rgba(255, 100, 100, 0.4);
+            stroke-dasharray: 5, 5;
+            stroke-width: 2px;
+            marker-end: url(#arrowhead-inactive);
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* Tooltip                                                      */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 1000;
+            max-width: 250px;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 700;
+            color: #70a1ff;
+            margin-bottom: 8px;
+        }
+
+        .tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+        }
+
+        .tooltip-label {
+            color: #888;
+        }
+
+        .tooltip-value {
+            color: #fff;
+            font-family: 'Consolas', monospace;
+        }
+
+        .tooltip-modifiers {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 11px;
+        }
+
+        .tooltip-modifiers .modifier-line {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 3px 0;
+        }
+
+        .tooltip-modifiers .modifier-line.active {
+            color: #7bed9f;
+        }
+
+        .tooltip-modifiers .modifier-line.inactive {
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        .tooltip-modifiers .mod-icon {
+            font-weight: bold;
+        }
+
+        .modifier-line.active .mod-icon {
+            color: #7bed9f;
+        }
+
+        .modifier-line.inactive .mod-icon {
+            color: #ff6b6b;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* Message Overlay                                              */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .message-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .message-overlay.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #70a1ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="title">⚔️ DAG RPG Phase 2 — Temporal Mechanics Visualizer</div>
+            <div class="status-bar">
+                <div class="status-badge">
+                    <div class="status-dot disconnected" id="statusDot"></div>
+                    <span id="statusText">Disconnected</span>
+                </div>
+                <div class="status-badge">
+                    📊 <span id="updateCount">0</span> updates
+                </div>
+                <div class="status-badge">
+                    🎯 <span id="nodeCount">0</span> nodes
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- LEFT SIDEBAR: Tags & Recently -->
+            <div class="left-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">🏷️ Active Tags</div>
+                    <div class="tag-list" id="tagList">
+                        <span class="no-tags">No active tags</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">⚡ Recently States</div>
+                    <div class="recently-list" id="recentlyList">
+                        <div class="recently-item" id="recentlyCrit">
+                            <span class="recently-name">Crit Recently</span>
+                            <span class="recently-status no">—</span>
+                        </div>
+                        <div class="recently-item" id="recentlyBlock">
+                            <span class="recently-name">Block Recently</span>
+                            <span class="recently-status no">—</span>
+                        </div>
+                        <div class="recently-item" id="recentlyKill">
+                            <span class="recently-name">Kill Recently</span>
+                            <span class="recently-status no">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">📈 History Decay</div>
+                    <div id="historyBars"></div>
+                </div>
+            </div>
+
+            <!-- CENTER: Graph -->
+            <div id="graph-container">
+                <svg id="graph"></svg>
+
+                <div class="legend">
+                    <div class="legend-title">NODE TYPES</div>
+                    <div class="legend-item">
+                        <div class="legend-dot base"></div>
+                        <span>Base Stat</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot clean"></div>
+                        <span>Derived (Clean)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot dirty"></div>
+                        <span>Dirty (Recalc)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot history"></div>
+                        <span>History Node</span>
+                    </div>
+                </div>
+
+                <div class="edge-legend">
+                    <div class="legend-title">EDGE STATES</div>
+                    <div class="edge-sample">
+                        <div class="edge-line normal"></div>
+                        <span>Normal</span>
+                    </div>
+                    <div class="edge-sample">
+                        <div class="edge-line active"></div>
+                        <span>Active Conditional</span>
+                    </div>
+                    <div class="edge-sample">
+                        <div class="edge-line inactive"></div>
+                        <span>Inactive Conditional</span>
+                    </div>
+                </div>
+
+                <div class="message-overlay" id="messageOverlay">
+                    <div class="spinner"></div>
+                    <h2>Connecting to Server...</h2>
+                    <p style="color: #888;">Waiting for ws://localhost:8090</p>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR: Stats & Controls (Side by Side) -->
+            <div class="right-panel">
+                <!-- Stats Column -->
+                <div class="panel-column">
+                    <div class="panel-header">📊 Stats</div>
+                    <div class="stats-panel" id="statsPanel">
+                        <!-- Stats will be dynamically populated -->
+                    </div>
+                </div>
+                
+                <!-- Controls Column -->
+                <div class="panel-column">
+                    <div class="panel-header">🎮 Controls</div>
+                    <div class="controls-panel">
+                        <!-- Attributes Section -->
+                        <div class="control-section">
+                            <div class="control-section-title">💪 Core Attributes</div>
+                            
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Strength</span>
+                                    <span class="slider-value" id="str-value">20</span>
+                                </div>
+                                <input type="range" min="1" max="200" value="20" id="slider-str" class="attr-slider str">
+                            </div>
+                            
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Dexterity</span>
+                                    <span class="slider-value" id="dex-value">20</span>
+                                </div>
+                                <input type="range" min="1" max="200" value="20" id="slider-dex" class="attr-slider dex">
+                            </div>
+                            
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Intelligence</span>
+                                    <span class="slider-value" id="int-value">20</span>
+                                </div>
+                                <input type="range" min="1" max="200" value="20" id="slider-int" class="attr-slider int">
+                            </div>
+                        </div>
+                        
+                        <!-- Combat Events Section -->
+                        <div class="control-section">
+                            <div class="control-section-title">⚔️ Combat Events</div>
+                            <div class="button-row">
+                                <button class="action-btn crit" onclick="sendCommand('crit')">💥 Crit!</button>
+                                <button class="action-btn block" onclick="sendCommand('block')">🛡️ Block!</button>
+                            </div>
+                            
+                            <div class="damage-control">
+                                <div class="slider-header">
+                                    <span>Damage Amount</span>
+                                    <span class="slider-value" id="dmg-value">500</span>
+                                </div>
+                                <input type="range" min="100" max="2000" value="500" id="slider-dmg" class="dmg-slider">
+                                <div class="button-row damage-types">
+                                    <button class="action-btn fire" onclick="takeDamage('fire')">🔥 Fire</button>
+                                    <button class="action-btn cold" onclick="takeDamage('cold')">❄️ Cold</button>
+                                    <button class="action-btn phys" onclick="takeDamage('phys')">💀 Phys</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment Section -->
+                        <div class="control-section">
+                            <div class="control-section-title">🎒 Equipment</div>
+                            <div class="toggle-grid">
+                                <label class="toggle-item">
+                                    <input type="checkbox" id="equip-daggers" onchange="toggleEquip('daggers', this.checked)">
+                                    <span class="toggle-label">🗡️ Dual Daggers</span>
+                                    <span class="toggle-hint">+DualWielding tag</span>
+                                </label>
+                                <label class="toggle-item">
+                                    <input type="checkbox" id="equip-shield" onchange="toggleEquip('shield', this.checked)">
+                                    <span class="toggle-label">🛡️ Phoenix Shield</span>
+                                    <span class="toggle-hint">+30% Fire Res, +25% Block</span>
+                                </label>
+                                <label class="toggle-item">
+                                    <input type="checkbox" id="equip-ring" onchange="toggleEquip('ring', this.checked)">
+                                    <span class="toggle-label">💍 Mana Ring</span>
+                                    <span class="toggle-hint">+10% Mana, +25 Flat</span>
+                                </label>
+                                <label class="toggle-item">
+                                    <input type="checkbox" id="equip-gloves" onchange="toggleEquip('gloves', this.checked)">
+                                    <span class="toggle-label">🧤 Assassin Gloves</span>
+                                    <span class="toggle-hint">+30% Crit if DualWield</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Auras Section -->
+                        <div class="control-section">
+                            <div class="control-section-title">✨ Auras & Buffs</div>
+                            <div class="toggle-grid">
+                                <label class="toggle-item aura">
+                                    <input type="checkbox" id="aura-purity" onchange="toggleAura('purity', this.checked)">
+                                    <span class="toggle-label">🌟 Purity of Elements</span>
+                                    <span class="toggle-hint">+20% Phys→Light Conv</span>
+                                </label>
+                                <button class="action-btn onslaught" onclick="sendCommand('aura onslaught')">
+                                    ⚡ Onslaught (4s)
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Auto Combat Section -->
+                        <div class="control-section">
+                            <div class="control-section-title">🤖 Auto Combat</div>
+                            <div class="auto-combat-controls">
+                                <label class="toggle-item auto">
+                                    <input type="checkbox" id="auto-combat" onchange="toggleAuto(this.checked)">
+                                    <span class="toggle-label">Enable Auto Combat</span>
+                                </label>
+                                <div class="slider-control">
+                                    <div class="slider-header">
+                                        <span>Speed</span>
+                                        <span class="slider-value" id="speed-value">1.0x</span>
+                                    </div>
+                                    <input type="range" min="1" max="50" value="10" id="slider-speed" class="speed-slider">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Layout Controls -->
+                        <div class="control-section">
+                            <div class="control-section-title">🔧 Layout</div>
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Link Distance</span>
+                                    <span class="slider-value" id="link-dist-value">180</span>
+                                </div>
+                                <input type="range" min="50" max="400" value="180" id="slider-link-dist" class="layout-slider">
+                            </div>
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Repulsion (charge)</span>
+                                    <span class="slider-value" id="charge-value">-220</span>
+                                </div>
+                                <input type="range" min="-400" max="-50" value="-220" id="slider-charge" class="layout-slider">
+                            </div>
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Link Strength</span>
+                                    <span class="slider-value" id="link-str-value">0.70</span>
+                                </div>
+                                <input type="range" min="0.1" max="1.0" step="0.01" value="0.7" id="slider-link-str" class="layout-slider">
+                            </div>
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Velocity Decay</span>
+                                    <span class="slider-value" id="vel-decay-value">0.22</span>
+                                </div>
+                                <input type="range" min="0.05" max="0.9" step="0.01" value="0.22" id="slider-vel-decay" class="layout-slider">
+                            </div>
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Internal Cluster Repel</span>
+                                    <span class="slider-value" id="internal-repel-value">800</span>
+                                </div>
+                                <input type="range" min="0" max="2000" step="10" value="800" id="slider-internal-repel" class="layout-slider">
+                            </div>
+                            <div class="slider-control">
+                                <div class="slider-header">
+                                    <span>Simulation Speed (0 = continuous)</span>
+                                    <span class="slider-value" id="sim-speed-value">30</span>
+                                </div>
+                                <input type="range" min="0" max="60" step="1" value="30" id="slider-sim-speed" class="layout-slider">
+                            </div>
+                            <div style="display:flex;gap:8px;margin-top:8px;">
+                                <button class="action-btn" id="btn-reset-layout">Reset Layout</button>
+                                <button class="action-btn" id="btn-spread">Spread More</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Console Section -->
+                        <div class="control-section">
+                            <div class="control-section-title">💻 Custom Command</div>
+                            <div class="console-input">
+                                <input type="text" id="custom-cmd" placeholder="Type command..." onkeypress="handleCmdKey(event)">
+                                <button class="send-btn" onclick="sendCustomCmd()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // Configuration
+        // ═══════════════════════════════════════════════════════════
+        
+        const WS_URL = 'ws://localhost:8090';
+        const NODE_RADIUS = 32;
+        // Layout tuning defaults (adjustable via Controls)
+        const LINK_DISTANCE = 180;          // ideal link length
+        const CHARGE_STRENGTH = -3220;      // negative values repel
+        const LINK_STRENGTH = 0.7;         // 0..1
+        const VELOCITY_DECAY = 0.15;       // 0..1, higher = more damping
+        const ALPHA_RESTART = 0.18;        // small kick when resetting layout
+        const INTERNAL_REPEL = 4800;        // internal per-cluster repulsion strength (tweakable)
+        
+        // Category display order and icons
+        const CATEGORY_CONFIG = {
+            'attribute': { icon: '💪', order: 0 },
+            'offense': { icon: '⚔️', order: 1 },
+            'defense': { icon: '🛡️', order: 2 },
+            'resource': { icon: '💧', order: 3 },
+            'conversion': { icon: '🔄', order: 4 },
+            'utility': { icon: '🚀', order: 5 },
+            'unknown': { icon: '❓', order: 99 }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // State
+        // ═══════════════════════════════════════════════════════════
+        
+        let ws = null;
+        let updateCount = 0;
+        let graphData = { nodes: [], edges: [], tags: [], recently: {} };
+        let simulation = null;
+        let reconnectTimeout = null;
+        // Simulation tick control: 0 = continuous (animation frame), >0 sets updates per second
+        let simTickRate = 30;
+        let simTickInterval = null;
+
+        // ═══════════════════════════════════════════════════════════
+        // D3 Setup
+        // ═══════════════════════════════════════════════════════════
+        
+        const svg = d3.select('#graph');
+        const container = d3.select('#graph-container');
+        
+        function getDimensions() {
+            const rect = container.node().getBoundingClientRect();
+            return { width: rect.width, height: rect.height };
+        }
+
+        // Arrow markers for different edge states
+        const defs = svg.append('defs');
+        
+        // Normal arrow
+        defs.append('marker')
+            .attr('id', 'arrowhead')
+            .attr('viewBox', '-0 -5 10 10')
+            .attr('refX', 18)
+            .attr('refY', 0)
+            .attr('orient', 'auto')
+            .attr('markerWidth', 6)
+            .attr('markerHeight', 6)
+            .append('path')
+            .attr('d', 'M 0,-5 L 10,0 L 0,5')
+            .attr('fill', 'rgba(255, 255, 255, 0.4)');
+
+        // Active edge arrow
+        defs.append('marker')
+            .attr('id', 'arrowhead-active')
+            .attr('viewBox', '-0 -5 10 10')
+            .attr('refX', 18)
+            .attr('refY', 0)
+            .attr('orient', 'auto')
+            .attr('markerWidth', 6)
+            .attr('markerHeight', 6)
+            .append('path')
+            .attr('d', 'M 0,-5 L 10,0 L 0,5')
+            .attr('fill', '#70a1ff');
+
+        // Custom internal repulsion force: pushes nodes apart only when they belong to the same component
+        function internalRepelForce(strength) {
+            let nodes;
+            function force(alpha) {
+                if (!nodes) return;
+                const s = strength * alpha;
+                for (let i = 0; i < nodes.length; i++) {
+                    const a = nodes[i];
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const b = nodes[j];
+                        if (a._component === undefined || b._component === undefined) continue;
+                        if (a._component !== b._component) continue; // only within same component
+
+                        let dx = a.x - b.x;
+                        let dy = a.y - b.y;
+                        if (dx === 0 && dy === 0) {
+                            dx = (Math.random() - 0.5) * 1e-6;
+                            dy = (Math.random() - 0.5) * 1e-6;
+                        }
+                        const dist2 = dx * dx + dy * dy;
+                        const minDist = (NODE_RADIUS * 2 + 8);
+                        // Apply stronger push when closer than preferred spacing
+                        const desired = minDist * minDist;
+                        const factor = s / (dist2 + 0.01);
+
+                        // Only push significantly when nodes are closer than desired; otherwise small adjustment
+                        const scale = dist2 < desired ? factor : factor * 0.08;
+
+                        const vx = dx * scale;
+                        const vy = dy * scale;
+                        a.vx += vx;
+                        a.vy += vy;
+                        b.vx -= vx;
+                        b.vy -= vy;
+                    }
+                }
+            }
+            force.initialize = function(_) { nodes = _; };
+            force.strength = function(_) { if (!arguments.length) return strength; strength = +_; return force; };
+            return force;
+        }
+
+        // Inactive edge arrow
+        defs.append('marker')
+            .attr('id', 'arrowhead-inactive')
+            .attr('viewBox', '-0 -5 10 10')
+            .attr('refX', 18)
+            .attr('refY', 0)
+            .attr('orient', 'auto')
+            .attr('markerWidth', 6)
+            .attr('markerHeight', 6)
+            .append('path')
+            .attr('d', 'M 0,-5 L 10,0 L 0,5')
+            .attr('fill', 'rgba(255, 100, 100, 0.5)');
+
+        // Main group for zoom/pan
+        const g = svg.append('g');
+
+        // Enable zoom
+        const zoom = d3.zoom()
+            .scaleExtent([0.3, 3])
+            .on('zoom', (event) => {
+                g.attr('transform', event.transform);
+            });
+        
+        svg.call(zoom);
+
+        // Create groups for links and nodes
+        const linksGroup = g.append('g').attr('class', 'links');
+        const nodesGroup = g.append('g').attr('class', 'nodes');
+
+        // Tooltip
+        const tooltip = d3.select('#tooltip');
+
+        // ═══════════════════════════════════════════════════════════
+        // WebSocket Connection
+        // ═══════════════════════════════════════════════════════════
+        
+        function connect() {
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+                reconnectTimeout = null;
+            }
+
+            ws = new WebSocket(WS_URL);
+
+            ws.onopen = () => {
+                console.log('Connected to server');
+                document.getElementById('statusDot').classList.remove('disconnected');
+                document.getElementById('statusDot').classList.add('connected');
+                document.getElementById('statusText').textContent = 'Connected';
+                document.getElementById('messageOverlay').classList.add('hidden');
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    updateCount++;
+                    document.getElementById('updateCount').textContent = updateCount;
+                    document.getElementById('nodeCount').textContent = data.nodes ? data.nodes.length : 0;
+                    processUpdate(data);
+                } catch (e) {
+                    console.error('Failed to parse message:', e);
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('Disconnected from server');
+                document.getElementById('statusDot').classList.remove('connected');
+                document.getElementById('statusDot').classList.add('disconnected');
+                document.getElementById('statusText').textContent = 'Disconnected';
+                document.getElementById('messageOverlay').classList.remove('hidden');
+                
+                reconnectTimeout = setTimeout(connect, 2000);
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Process Server Updates
+        // ═══════════════════════════════════════════════════════════
+
+        function processUpdate(data) {
+            // Update tags sidebar
+            updateTagsSidebar(data.tags || []);
+            
+            // Update recently states
+            updateRecentlyStates(data.recently || {});
+            
+            // Update history bars
+            updateHistoryBars(data.nodes || []);
+            
+            // Update graph
+            updateGraph(data);
+            
+            // Update stats panel
+            updateStatsPanel(data.nodes || []);
+        }
+
+        function updateTagsSidebar(tags) {
+            const tagList = document.getElementById('tagList');
+            
+            if (!tags || tags.length === 0) {
+                tagList.innerHTML = '<span class="no-tags">No active tags</span>';
+                return;
+            }
+
+            tagList.innerHTML = tags.map(tag => {
+                let className = 'tag-badge';
+                if (tag.includes('Equipment') || tag.includes('DualWielding') || tag.includes('Shield')) {
+                    className += ' equipment';
+                } else if (tag.includes('Aura') || tag.includes('Purity') || tag.includes('Onslaught')) {
+                    className += ' aura';
+                }
+                
+                // Shorten tag name for display
+                const shortName = tag.split('.').pop();
+                return `<span class="${className}" title="${tag}">${shortName}</span>`;
+            }).join('');
+        }
+
+        function updateRecentlyStates(recently) {
+            // Update Crit Recently
+            const critItem = document.getElementById('recentlyCrit');
+            const critActive = recently.crit === true;
+            critItem.classList.toggle('active', critActive);
+            critItem.querySelector('.recently-status').textContent = critActive ? 'YES!' : '—';
+            critItem.querySelector('.recently-status').className = 'recently-status ' + (critActive ? 'yes' : 'no');
+
+            // Update Block Recently
+            const blockItem = document.getElementById('recentlyBlock');
+            const blockActive = recently.block === true;
+            blockItem.classList.toggle('active', blockActive);
+            blockItem.querySelector('.recently-status').textContent = blockActive ? 'YES!' : '—';
+            blockItem.querySelector('.recently-status').className = 'recently-status ' + (blockActive ? 'yes' : 'no');
+
+            // Update Kill Recently
+            const killItem = document.getElementById('recentlyKill');
+            const killActive = recently.kill === true;
+            killItem.classList.toggle('active', killActive);
+            killItem.querySelector('.recently-status').textContent = killActive ? 'YES!' : '—';
+            killItem.querySelector('.recently-status').className = 'recently-status ' + (killActive ? 'yes' : 'no');
+        }
+
+        function updateHistoryBars(nodes) {
+            const historyContainer = document.getElementById('historyBars');
+            const historyNodes = nodes.filter(n => n.isHistory === true);
+            
+            if (historyNodes.length === 0) {
+                historyContainer.innerHTML = '<span class="no-tags">No history active</span>';
+                return;
+            }
+
+            historyContainer.innerHTML = historyNodes.map(node => {
+                // Normalize value for bar display (cap at reasonable max)
+                const maxDisplay = 1000; // Adjust as needed
+                const percent = Math.min(100, (node.value / maxDisplay) * 100);
+                
+                return `
+                    <div class="history-item">
+                        <div class="history-label">
+                            <span>${node.label}</span>
+                            <span>${node.value.toFixed(0)}</span>
+                        </div>
+                        <div class="history-bar">
+                            <div class="history-fill" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Graph Rendering
+        // ═══════════════════════════════════════════════════════════
+        
+        function updateGraph(data) {
+            const { width, height } = getDimensions();
+
+            // Merge new data with existing positions
+            const oldNodeMap = new Map(graphData.nodes.map(n => [n.id, n]));
+            
+            // Check if structure changed (new/removed nodes)
+            const structureChanged = graphData.nodes.length !== data.nodes.length ||
+                                    data.nodes.some(n => !oldNodeMap.has(n.id));
+            
+            data.nodes.forEach(node => {
+                const oldNode = oldNodeMap.get(node.id);
+                if (oldNode) {
+                    node.x = oldNode.x;
+                    node.y = oldNode.y;
+                    node.vx = oldNode.vx;
+                    node.vy = oldNode.vy;
+                }
+            });
+
+            graphData = data;
+
+            // Convert edges to D3 format with state info
+            const links = (data.edges || []).map(e => ({
+                source: e.from,
+                target: e.to,
+                isConditional: e.isConditional || false,
+                isActive: e.isActive !== false  // Default to active
+            }));
+
+            // Compute connected components so we can cluster unrelated groups
+            const idToIndex = new Map();
+            data.nodes.forEach((n, i) => idToIndex.set(n.id, i));
+            const adj = new Array(data.nodes.length).fill(0).map(() => []);
+            links.forEach(l => {
+                const a = idToIndex.get(l.source);
+                const b = idToIndex.get(l.target);
+                if (a !== undefined && b !== undefined) {
+                    adj[a].push(b);
+                    adj[b].push(a);
+                }
+            });
+
+            const compIndex = new Array(data.nodes.length).fill(-1);
+            let compCount = 0;
+            for (let i = 0; i < data.nodes.length; i++) {
+                if (compIndex[i] !== -1) continue;
+                // BFS/DFS
+                const stack = [i];
+                compIndex[i] = compCount;
+                while (stack.length) {
+                    const u = stack.pop();
+                    for (const v of adj[u]) {
+                        if (compIndex[v] === -1) {
+                            compIndex[v] = compCount;
+                            stack.push(v);
+                        }
+                    }
+                }
+                compCount++;
+            }
+
+            // Attach component id to nodes for later use
+            data.nodes.forEach((n, i) => n._component = compIndex[i]);
+
+            // Update simulation
+            if (!simulation) {
+                simulation = d3.forceSimulation()
+                    .force('link', d3.forceLink().id(d => d.id).distance(LINK_DISTANCE).strength(LINK_STRENGTH))
+                    .force('charge', d3.forceManyBody().strength(CHARGE_STRENGTH).distanceMax(LINK_DISTANCE * 2))
+                    // Gentle pulls toward center to avoid extreme drifting (very low strength)
+                    .force('x', d3.forceX(width / 2).strength(0.006))
+                    .force('y', d3.forceY(height / 2).strength(0.006))
+                    .force('center', d3.forceCenter(width / 2, height / 2))
+                    .force('collision', d3.forceCollide().radius(NODE_RADIUS + 6))
+                    .force('internalRepel', internalRepelForce(INTERNAL_REPEL))
+                    .alphaDecay(0.025)
+                    .velocityDecay(VELOCITY_DECAY);
+            }
+
+            simulation.nodes(data.nodes);
+            simulation.force('link').links(links);
+
+            // Compute component centers arranged around a circle (spread depends on number of components)
+            let compCenters = [];
+            if (compCount > 0) {
+                const spreadRadius = Math.min(width, height) * 0.28 + (compCount - 1) * 6;
+                for (let i = 0; i < compCount; i++) {
+                    const angle = (2 * Math.PI * i) / compCount;
+                    compCenters.push({
+                        x: width / 2 + Math.cos(angle) * spreadRadius,
+                        y: height / 2 + Math.sin(angle) * spreadRadius
+                    });
+                }
+            }
+
+            // Apply cluster forces that pull nodes to their component center
+            const clusterStrength = compCount > 1 ? 0.08 : 0.006; // stronger when multiple components
+            simulation.force('clusterX', d3.forceX(d => {
+                const comp = (d && d._component !== undefined) ? d._component : 0;
+                return compCenters[comp] ? compCenters[comp].x : width / 2;
+            }).strength(clusterStrength));
+            simulation.force('clusterY', d3.forceY(d => {
+                const comp = (d && d._component !== undefined) ? d._component : 0;
+                return compCenters[comp] ? compCenters[comp].y : height / 2;
+            }).strength(clusterStrength));
+            
+            // Only restart if structure changed, otherwise just update without restarting
+            if (structureChanged) {
+                // Small alpha kick to settle the new topology without blasting nodes apart
+                simulation.alpha(ALPHA_RESTART).restart();
+            }
+
+            // ─────────────────────────────────────────────────────────
+            // Update Links
+            // ─────────────────────────────────────────────────────────
+            
+            const linkSelection = linksGroup.selectAll('.link')
+                .data(links, d => `${d.source.id || d.source}-${d.target.id || d.target}`);
+
+            linkSelection.exit().remove();
+
+            const linkEnter = linkSelection.enter()
+                .append('path')
+                .attr('class', 'link');
+
+            const linkMerge = linkEnter.merge(linkSelection);
+
+            // Update link classes based on state
+            linkMerge.attr('class', d => {
+                if (!d.isConditional) return 'link';
+                return d.isActive ? 'link active' : 'link inactive';
+            });
+
+            // ─────────────────────────────────────────────────────────
+            // Update Nodes
+            // ─────────────────────────────────────────────────────────
+            
+            const nodeSelection = nodesGroup.selectAll('.node')
+                .data(data.nodes, d => d.id);
+
+            nodeSelection.exit().remove();
+
+            const nodeEnter = nodeSelection.enter()
+                .append('g')
+                .attr('class', 'node')
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+
+            nodeEnter.append('circle')
+                .attr('r', NODE_RADIUS);
+
+            nodeEnter.append('text')
+                .attr('class', 'node-label')
+                .attr('dy', -4);
+
+            nodeEnter.append('text')
+                .attr('class', 'node-value')
+                .attr('dy', 10);
+
+            nodeEnter.append('text')
+                .attr('class', 'node-category')
+                .attr('dy', 22);
+
+            // Merge and update
+            const nodeMerge = nodeEnter.merge(nodeSelection);
+
+            // Update classes for coloring
+            nodeMerge.attr('class', d => {
+                let cls = 'node';
+                
+                if (d.isHistory) {
+                    cls += ' history';
+                    if (d.value > 0) cls += ' decaying';
+                } else if (d.type === 'base') {
+                    cls += ' base';
+                } else {
+                    cls += d.isDirty ? ' dirty' : ' clean';
+                }
+                
+                return cls;
+            });
+
+            nodeMerge.select('.node-label')
+                .text(d => {
+                    // Truncate long labels
+                    const label = d.label || d.id;
+                    return label.length > 12 ? label.substr(0, 10) + '...' : label;
+                });
+
+            nodeMerge.select('.node-value')
+                .text(d => d.value.toFixed(1));
+
+            nodeMerge.select('.node-category')
+                .text(d => {
+                    const cat = d.category || 'unknown';
+                    const config = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG['unknown'];
+                    return config.icon;
+                });
+
+            // Tooltip events
+            nodeMerge
+                .on('mouseover', (event, d) => {
+                    const typeStr = d.isHistory ? 'History Node' : (d.type === 'base' ? 'Base Stat' : 'Derived Stat');
+                    const statusStr = d.isHistory ? '📊 Rolling Window' : 
+                                     (d.type === 'base' ? '⚙️ Source' : 
+                                      (d.isDirty ? '⚠️ DIRTY' : '✓ Clean'));
+                    
+                    let html = `
+                        <div class="tooltip-title">${d.label}</div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Type:</span>
+                            <span class="tooltip-value">${typeStr}</span>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Value:</span>
+                            <span class="tooltip-value">${d.value.toFixed(2)}</span>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Status:</span>
+                            <span class="tooltip-value">${statusStr}</span>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Category:</span>
+                            <span class="tooltip-value">${d.category || 'unknown'}</span>
+                        </div>
+                    `;
+
+                    if (d.modifiers && d.modifiers.length > 0) {
+                        html += `<div class="tooltip-modifiers">`;
+                        d.modifiers.forEach(m => {
+                            const activeClass = m.active ? 'active' : 'inactive';
+                            const icon = m.active ? '✓' : '✗';
+                            html += `<div class="modifier-line ${activeClass}"><span class="mod-icon">${icon}</span> ${m.description}</div>`;
+                        });
+                        html += `</div>`;
+                    }
+
+                    tooltip
+                        .html(html)
+                        .style('left', (event.pageX + 15) + 'px')
+                        .style('top', (event.pageY - 10) + 'px')
+                        .classed('visible', true);
+                })
+                .on('mouseout', () => {
+                    tooltip.classed('visible', false);
+                });
+
+            // Update positions on tick (throttled by simTickRate when >0)
+            function ticked() {
+                // Clamp positions so nodes can't be pushed off-screen or too far apart
+                graphData.nodes.forEach(d => {
+                    const margin = NODE_RADIUS + 8;
+                    d.x = Math.max(margin, Math.min(width - margin, d.x));
+                    d.y = Math.max(margin, Math.min(height - margin, d.y));
+                });
+
+                linkMerge.attr('d', d => {
+                    const sx = d.source.x;
+                    const sy = d.source.y;
+                    const tx = d.target.x;
+                    const ty = d.target.y;
+                    const dx = tx - sx;
+                    const dy = ty - sy;
+                    const dr = Math.sqrt(dx * dx + dy * dy) * 1.2;
+                    return `M${sx},${sy}A${dr},${dr} 0 0,1 ${tx},${ty}`;
+                });
+
+                nodeMerge.attr('transform', d => `translate(${d.x},${d.y})`);
+            }
+
+            // Clear any existing interval to avoid duplicates
+            if (simTickInterval) {
+                clearInterval(simTickInterval);
+                simTickInterval = null;
+            }
+
+            if (simTickRate <= 0) {
+                // Continuous: use D3's tick events
+                simulation.on('tick', ticked);
+                simulation.alphaTarget(0);
+                simulation.restart();
+            } else {
+                // Throttled: remove D3 automatic tick handler and drive ticks via setInterval
+                simulation.on('tick', null);
+                const ms = Math.max(1, Math.round(1000 / simTickRate));
+                simTickInterval = setInterval(() => {
+                    try {
+                        simulation.tick();
+                        ticked();
+                    } catch (e) {
+                        console.warn('Simulation tick error:', e);
+                    }
+                }, ms);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Stats Panel
+        // ═══════════════════════════════════════════════════════════
+
+        function updateStatsPanel(nodes) {
+            const statsPanel = document.getElementById('statsPanel');
+            
+            // Group by category
+            const grouped = {};
+            nodes.forEach(node => {
+                const cat = node.category || 'unknown';
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(node);
+            });
+
+            // Sort categories
+            const sortedCats = Object.keys(grouped).sort((a, b) => {
+                const orderA = (CATEGORY_CONFIG[a] || CATEGORY_CONFIG['unknown']).order;
+                const orderB = (CATEGORY_CONFIG[b] || CATEGORY_CONFIG['unknown']).order;
+                return orderA - orderB;
+            });
+
+            let html = '';
+            sortedCats.forEach(cat => {
+                const config = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG['unknown'];
+                
+                html += `
+                    <div class="stats-section">
+                        <div class="stats-section-title">
+                            <span class="category-icon">${config.icon}</span>
+                            ${cat.toUpperCase()}
+                        </div>
+                `;
+
+                grouped[cat].forEach(node => {
+                    let itemClass = 'stat-item';
+                    if (node.isHistory) {
+                        itemClass += ' history';
+                    } else if (node.type === 'base') {
+                        itemClass += ' base';
+                    } else if (node.isDirty) {
+                        itemClass += ' dirty';
+                    } else {
+                        itemClass += ' derived';
+                    }
+
+                    let valueClass = 'stat-value';
+                    
+                    html += `
+                        <div class="${itemClass}">
+                            <span class="stat-name">${node.label}</span>
+                            <span class="${valueClass}">${node.value.toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            });
+
+            statsPanel.innerHTML = html;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Drag Handlers
+        // ═══════════════════════════════════════════════════════════
+        
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.1).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Window Resize Handler
+        // ═══════════════════════════════════════════════════════════
+        
+        window.addEventListener('resize', () => {
+            const { width, height } = getDimensions();
+            if (simulation) {
+                simulation.force('center', d3.forceCenter(width / 2, height / 2));
+                simulation.alpha(0.1).restart();
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // Control Panel Functions
+        // ═══════════════════════════════════════════════════════════
+        
+        // Send a command to the server
+        function sendCommand(cmd) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(cmd);
+                console.log('Sent:', cmd);
+            } else {
+                console.error('WebSocket not connected');
+            }
+        }
+
+        // Attribute sliders
+        document.getElementById('slider-str').addEventListener('input', (e) => {
+            document.getElementById('str-value').textContent = e.target.value;
+            sendCommand('set strength ' + e.target.value);
+        });
+
+        document.getElementById('slider-dex').addEventListener('input', (e) => {
+            document.getElementById('dex-value').textContent = e.target.value;
+            sendCommand('set dexterity ' + e.target.value);
+        });
+
+        document.getElementById('slider-int').addEventListener('input', (e) => {
+            document.getElementById('int-value').textContent = e.target.value;
+            sendCommand('set intelligence ' + e.target.value);
+        });
+
+        // Damage slider
+        document.getElementById('slider-dmg').addEventListener('input', (e) => {
+            document.getElementById('dmg-value').textContent = e.target.value;
+        });
+
+        // Speed slider
+        document.getElementById('slider-speed').addEventListener('input', (e) => {
+            const speed = (e.target.value / 10).toFixed(1);
+            document.getElementById('speed-value').textContent = speed + 'x';
+            sendCommand('speed ' + speed);
+        });
+
+        // Layout controls
+        function applyLayoutSettings() {
+            if (!simulation) return;
+            const linkDist = +document.getElementById('slider-link-dist').value;
+            const charge = +document.getElementById('slider-charge').value;
+            const linkStr = +document.getElementById('slider-link-str').value;
+            const velDecay = +document.getElementById('slider-vel-decay').value;
+            const internalRepelVal = +document.getElementById('slider-internal-repel').value;
+            const simSpeedVal = +document.getElementById('slider-sim-speed').value;
+
+            // Apply to forces
+            const linkForce = simulation.force('link');
+            if (linkForce) {
+                linkForce.distance(linkDist).strength(linkStr);
+            } else {
+                simulation.force('link', d3.forceLink().id(d => d.id).distance(linkDist).strength(linkStr));
+            }
+
+            const chargeForce = simulation.force('charge');
+            if (chargeForce) {
+                chargeForce.strength(charge).distanceMax(linkDist * 2);
+            } else {
+                simulation.force('charge', d3.forceManyBody().strength(charge).distanceMax(linkDist * 2));
+            }
+
+            // Apply internal per-cluster repulsion
+            const irForce = simulation.force('internalRepel');
+            if (irForce && typeof irForce.strength === 'function') {
+                irForce.strength(internalRepelVal);
+            } else {
+                simulation.force('internalRepel', internalRepelForce(internalRepelVal));
+            }
+
+            // Update simulation tick rate (0 = continuous animation, >0 = updates per second)
+            simTickRate = simSpeedVal;
+            const simDisp = document.getElementById('sim-speed-value');
+            if (simDisp) simDisp.textContent = simSpeedVal;
+
+            simulation.velocityDecay(velDecay);
+            // small alpha nudge so layout recomputes
+            simulation.alpha(ALPHA_RESTART).restart();
+
+            // Reconfigure tick handling immediately
+            updateGraph(graphData);
+        }
+
+        // Wire layout sliders
+        ['link-dist','charge','link-str','vel-decay','internal-repel','sim-speed'].forEach(id => {
+            const el = document.getElementById('slider-' + id);
+            if (!el) return;
+            el.addEventListener('input', (e) => {
+                const val = e.target.value;
+                const disp = document.getElementById(id + '-value');
+                if (disp) disp.textContent = id === 'link-str' ? parseFloat(val).toFixed(2) : val;
+                applyLayoutSettings();
+            });
+        });
+
+        document.getElementById('btn-reset-layout').addEventListener('click', () => {
+            // reset sliders to defaults
+            document.getElementById('slider-link-dist').value = LINK_DISTANCE;
+            document.getElementById('link-dist-value').textContent = LINK_DISTANCE;
+            document.getElementById('slider-charge').value = CHARGE_STRENGTH;
+            document.getElementById('charge-value').textContent = CHARGE_STRENGTH;
+            document.getElementById('slider-link-str').value = LINK_STRENGTH;
+            document.getElementById('link-str-value').textContent = LINK_STRENGTH.toFixed(2);
+            document.getElementById('slider-vel-decay').value = VELOCITY_DECAY;
+            document.getElementById('vel-decay-value').textContent = VELOCITY_DECAY.toFixed(2);
+            document.getElementById('slider-internal-repel').value = INTERNAL_REPEL;
+            document.getElementById('internal-repel-value').textContent = INTERNAL_REPEL;
+            document.getElementById('slider-sim-speed').value = simTickRate;
+            document.getElementById('sim-speed-value').textContent = simTickRate;
+            applyLayoutSettings();
+        });
+
+        document.getElementById('btn-spread').addEventListener('click', () => {
+            // quick heuristic to spread nodes more
+            const cur = +document.getElementById('slider-link-dist').value;
+            const next = Math.min(400, Math.max(80, Math.round(cur * 1.25)));
+            document.getElementById('slider-link-dist').value = next;
+            document.getElementById('link-dist-value').textContent = next;
+            applyLayoutSettings();
+        });
+
+        // Take damage with selected amount
+        function takeDamage(type) {
+            const amount = document.getElementById('slider-dmg').value;
+            sendCommand('damage ' + amount + ' ' + type);
+        }
+
+        // Equipment toggles
+        function toggleEquip(item, equipped) {
+            if (equipped) {
+                sendCommand('equip ' + item);
+            } else {
+                sendCommand('unequip ' + item);
+            }
+        }
+
+        // Aura toggles
+        function toggleAura(aura, active) {
+            sendCommand('aura ' + aura);
+        }
+
+        // Auto combat toggle
+        function toggleAuto(enabled) {
+            sendCommand('auto ' + (enabled ? 'on' : 'off'));
+        }
+
+        // Custom command input
+        function handleCmdKey(event) {
+            if (event.key === 'Enter') {
+                sendCustomCmd();
+            }
+        }
+
+        function sendCustomCmd() {
+            const input = document.getElementById('custom-cmd');
+            const cmd = input.value.trim();
+            if (cmd) {
+                sendCommand(cmd);
+                input.value = '';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Initialize
+        // ═══════════════════════════════════════════════════════════
+        
+        connect();
+    </script>
+</body>
+</html>

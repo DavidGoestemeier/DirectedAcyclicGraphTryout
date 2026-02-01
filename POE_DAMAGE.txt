@@ -1,0 +1,1298 @@
+
+[dismiss]
+If you'd like to help out, please check the Community Portal and our getting started guide. Also, check out our sister project on poe2wiki.net.
+
+Damage
+Jump to navigationJump to search
+
+This article needs cleanup to meet quality standards.
+
+Please help improve this article if you can.
+
+Damage is the process by which a player or monster's life or energy shield is reduced.
+
+This page focuses on damage being dealt by the player. For information on damage dealt by minions, see Minion. For information on how elemental damage affects the player, see status ailments and resistances. For information on when damage is applied see, receiving damage.
+
+
+Contents
+1	Damage calculation
+1.1	Damage variance
+2	Damage source
+3	Damage type
+4	Keywords exclusive to damage sources
+4.1	Attack
+4.1.1	Melee
+4.1.2	Unarmed
+4.1.3	Weapon-specific keywords
+5	Other keywords
+5.1	Area
+5.2	Elemental
+5.3	Mine
+5.4	Minion
+5.5	Projectile
+5.6	Totem
+5.7	Trap
+5.8	Generic modifiers
+5.9	Reflected damage
+5.10	Damage reduction
+6	Unique items
+6.1	Applying to all damage types
+6.2	Conditionally applying to all damage types
+6.3	Other unique items
+7	Passive skills
+8	Version history
+9	References
+Damage calculation
+The basic damage calculation is:
+
+Damage = (Base_Damage + Added_Damage) * Increased_Damage * More_Damage * Hit_Rate * (Critical_Strike_Damage * Critical_Strike_Chance)
+Base_Damage: The primary damage of the skill. This is either specified in the skill itself (and increases with the level of the skill gem), or is determined by the damage of your weapon (in the case of most Attacks).
+Added_Damage: Additional flat damage applied, modified by the skill's damage effectiveness value.
+Increased_Damage: Additional percentage damage applied. All applicable sources of increased damage stack additively (e.g. two +10% increased damage modifiers add together to make 20% increased damage: 100% + 10% + 10% = 120%).
+More_Damage: Additional percentage damage applied. All unique sources of more damage are multiplicative with each other (e.g. two +10% more damage modifiers will multiply on top of each other: 110% * 110% = 121%).
+Hit_Rate: The rate at which the damage is applied, typically based on attack speed or cast speed.
+Critical_Strike_Damage: See Critical Strike Multiplier.
+Critical_Strike_Chance: See Critical Strike Chance.
+In general:, More Damage is usually more effective than Increased Damage, due to diminishing returns from stacking increased damage modifiers, and the multiplicative nature of More Damage modifiers.
+
+Damage variance
+Damage variance describes the difference between the highest possible value that a source of damage can roll and the lowest possible value. Sources with higher differences are described as having higher damage variance, with lightning damage being characterized as having the highest damage variance of all damage types. For example, Adds 190 to 220 Cold Damage is an example of a source with low damage variance, while Adds 1 to 1000 Lightning Damage would be an example of a source with high damage variance. Mechanics like Damage is Lucky works favourably with skills with high damage variance.
+
+The damage number rolled is rolled per hit, and not per skill use, unlike crits.
+
+Some sources of damage are characterized by a lack of damage variance. For example, 
+
+Bloodthirst Support
+'s Supported Attacks deal Added Physical Damage with Weapons equal to 2% of Maximum Life while on Low Life is a static source of damage. This may be useful for players seeking to test in-game damage values while eliminating the uncertainty of damage rolls.
+
+Damage source
+All sources of damage are encompassed by one of four categories:[1]
+
+Attack damage
+Spell damage
+Secondary damage
+Damage over time
+A single hit or instance of damage can only be one of these four categories at a time and are mutually exclusive. Modifiers which apply specifically to one damage source never innately apply to any others, though some skill modifiers allow the numeric values of one damage source to be used in calculations for another (e.g. 
+
+Vortex
+ - note that in this example, the damage over time component is still not considered dealing spell damage, and will not be affected by modifiers to spell damage taken, such as Unnerve). Generic modifiers (e.g. Elemental Damage or simply just "Damage") can affect multiple damage sources.
+
+Damage type
+A hit can be composed of several types of damage, but each damage type is calculated separately, including damage range rolls. Currently there are five types of damage:
+
+Physical damage - Considered the default damage type. Auto-attacks typically deal physical damage before conversion, and almost all weapons (and unarmed) have base physical damage. Physical damage over time can be inflicted with the bleed ailment, or another common debuff, Corrupted Blood.
+Fire damage - One of three elemental damage types. Dealing a critical strike with fire damage inflicts ignite, however ignites also occur based on chance to ignite. Fire damage over time from ignites, burning ground, or other sources is classified as burning damage.
+Cold damage - One of three elemental damage types. Hitting an enemy with cold damage can inflict the chill ailment, while dealing a critical strike with cold damage can inflict freeze. Cold damage over time can be inflicted by certain spells, typically also applying Chill.
+Lightning damage - One of three elemental damage types. Dealing a critical strike with lightning damage can inflict shock. Base lightning damage tends to have higher variability in damage ranges, with minimum and maximum damage values often being significantly further apart than similar fire or cold damage modifiers. Lightning damage over time is significantly less common than its counterparts, mostly limited to the Siphoning monster modifier, Shock and Horror's beam skill, The Shaper's beam, and some environmental hazards.
+Chaos damage - Considered the rarest damage type, chaos damage bypasses energy shield and damages life directly. Chaos damage has the benefit of not being reflectable. Chaos damage over time can be inflicted with the poison ailment. Many chaos skills also innately cause debuffs that deal chaos damage over time.
+Darkness is a non-standard damage type only used by the Darkness debuff in Delve's Azurite Mine, never by enemies (or players).[2] It can be mitigated by "darkness resistance" purchased at the Voltaxic Generator, as well as by generic modifiers to damage taken.
+
+Keywords exclusive to damage sources
+Some keywords are exclusive to a specific damage source.
+
+Attack
+Melee
+Melee damage is a category of damage exclusive to the attack damage source; in the case of damage instances who inherit keywords from a parent skill (such as ignite or Puncture's bleed) the melee keyword is not inherited.
+
+Unarmed
+Main article: Unarmed
+Unarmed damage is a subcategory of Melee Damage and therefore inherits damage modifiers from the Melee and Attack keywords.
+
+Weapon-specific keywords
+Weapon-specific keywords are derivatives of the Attack damage source and therefore are not inherited by damage instances who inherit keywords from a parent skill (such as ignite, puncture's bleed, or Caustic Arrow's caustic ground).
+
+Other keywords
+Beyond source and type, there are several other ways to classify damage which are best referred to by their generic name Keywords. In the case of a damage instance triggered by a parent skill (such as ignite), these modifiers are all inherited from the triggering hit. See keywords for more information.
+
+Area
+Certain skills have an Area of Effect (AoE for short) and can affect multiple enemies or allies at once.
+
+Elemental
+Elemental Damage modifiers affect all types of elemental damage (Fire, Cold and Lightning). Chaos damage is not considered elemental.
+
+Mine
+Mines are skills which are thrown (like Traps) and detonated by a separate command.
+
+Minion
+"Minion Damage" redirects here. For the support gem, see Minion Damage Support.
+Modifiers to minion damage function as a generic damage modifier granted to the minion. This means it will apply to all damage dealt regardless of source, type, or keywords.
+
+Projectile
+Note that skills with the bow keyword are considered to implicitly be projectiles.
+
+Totem
+Modifiers to totem damage function as a generic damage modifier granted to the totem. This means it will apply to all damage dealt regardless of source, type, or keywords.
+
+Trap
+Modifiers to trap damage function as a generic damage modifier granted to the trap. This means it will apply to all damage dealt regardless of source, type, or keywords.
+
+Generic modifiers
+Damage modifiers that have no restrictions or specifications are commonly referred to as generic damage modifiers. These modifiers are potent since they will apply to all damage dealt by the modified skill regardless of source, type, or keywords.
+
+Reflected damage
+Main article: Damage reflection
+Damage reduction
+Damage reduction only affects physical damage. The other four damage types each have their own resistance value.
+
+Unique items
+Applying to all damage types
+Unique items that modify damage for all damage types globally.
+
+Item	Required level	+#% Damage
+
+Emperor's Might
+1	10%
+
+Bated Breath
+22	10%
+
+Replica Bated Breath
+22	10%
+
+Le Heup of All
+24	(10-30)%
+
+Leer Cast
+28	-25%
+
+Natural Hierarchy
+44	(25-35)%
+
+Eyes of the Greatwolf
+52	(25-35)%
+
+Solstice Vigil
+64	(30-40)%
+Conditionally applying to all damage types
+Unique items that modify damage for all damage types globally based on a condition.
+
+Item	Required level	Stats
+
+Hidden Potential
+1	(20-25)% increased Damage for each Magic Item EquippedCorrupted
+
+Primordial Might
+1	(25-30)% increased Damage if you Summoned a Golem in the past 8 seconds
+Golems Summoned in the past 8 seconds deal (35-45)% increased Damage
+Golems have (18-22)% increased Maximum Life
+Summoned Golems are Aggressive
+Primordial
+
+Redbeak
+1	40% increased Global Accuracy Rating100% increased Damage when on Low Life
+50% increased Physical Damage
+Adds 2 to 6 Physical Damage
+10% increased Attack Speed
++(20-30) to maximum Life
+Grants 2 Life per Enemy Hit
+
+Replica Primordial Might
+1	-1 to maximum number of Summoned Golems
+(25-30)% increased Damage if you Summoned a Golem in the past 8 seconds
+Golems Summoned in the past 8 seconds deal (100-125)% increased Damage
+Golems have (18-22)% increased Maximum Life
+Primordial
+Summoned Golems are Aggressive
+
+Self-Flagellation
+1	(10-20)% increased Damage per Curse on you
+An additional Curse can be applied to youCorrupted
+
+Watcher's Eye
+1	(4-6)% increased maximum Energy Shield
+(4-6)% increased maximum Life
+(4-6)% increased maximum Mana
+<Two or Three random aura modifiers>
+
+Goredrill
+5	30% increased Global Critical Strike Chance+(10-15) to Dexterity
+(50-70)% increased Physical Damage
+Adds (1-2) to (3-5) Physical Damage
+30% increased Critical Strike Chance
+40% increased Attack Damage against Bleeding Enemies
+50% chance to cause Bleeding on Critical Strike
+
+Wildslash
+12	Grants 7 Life per Enemy Hit+(10-15) to Strength
++(10-15) to Dexterity
+Adds (2-6) to (16-22) Physical Damage
+(10-15)% increased Attack Speed
+20% increased Damage with Movement Skills
+15% increased Attack Speed with Movement Skills
+15% reduced Global Accuracy Rating
+
+Berek's Pass
+20	+(12-16)% to Fire and Cold Resistances(25-30)% increased Fire Damage
+Adds (20-25) to (30-50) Cold Damage to Spells and Attacks
++(30-40) to maximum Energy Shield
+30% increased Damage while Ignited
++5000 to Armour while Frozen
+
+Carnage Heart
+20	+(10-16) to all Attributes+(20-40) to all Attributes
++(10-20)% to all Elemental Resistances
+(1.2-2)% of Physical Attack Damage Leeched as Life
+50% increased total Recovery per second from Life Leech
+(30-40)% increased Damage while Leeching
+
+Replica Tasalio's Sign
+20	+(20-30)% to Cold ResistanceAdds (15-20) to (25-35) Cold Damage to Spells and Attacks
++(200-300) to Evasion Rating
+Your Cold Damage cannot Freeze
+Immune to Chill
+Adds 60 to 80 Cold Damage against Chilled Enemies
+
+Tasalio's Sign
+20	+(20-30)% to Cold ResistanceAdds (7-10) to (15-20) Cold Damage to Spells and Attacks
++(200-300) to Evasion Rating
+50% chance to Avoid being Chilled
+10% chance to Freeze
+Adds 40 to 60 Cold Damage against Chilled Enemies
+
+Gifts from Above
+28	(20-30)% increased Global Critical Strike ChanceTrigger Level 10 Consecrate when you deal a Critical Strike
+(30-35)% increased Global Critical Strike Chance
+(10-15)% increased Light Radius
+(40-50)% increased Rarity of Items Dropped by Enemies killed with a Critical Strike
+50% increased Damage while on Consecrated Ground
++5% Chance to Block Attack Damage while on Consecrated Ground
+
+Briskwrap
+32	+(120-180) to Evasion Rating
++(30-40)% to Cold Resistance
+(60-100)% increased Mana Recovery from Flasks
+15% increased Dexterity
+1% increased Damage per 15 Dexterity
+
+The Halcyon
+35	+(20-30) to DexterityFreezes you inflict spread to other Enemies within 1.5 metres
++(35-40)% to Cold Resistance
+30% increased Freeze Duration on Enemies
+10% chance to Freeze
+60% increased Damage if you've Frozen an Enemy Recently
+
+Valako's Sign
+38	+(20-30)% to Lightning Resistance40% increased Damage with Hits against Shocked Enemies
+20% increased Lightning Damage
++(20-40) to maximum Mana
+1% of Damage Leeched as Life against Shocked Enemies
+25% chance to Shock
+
+Headhunter
+40	+(25-40) to maximum Life+(40-55) to Strength
++(40-55) to Dexterity
++(50-60) to maximum Life
+(20-30)% increased Damage with Hits against Rare monsters
+When you Kill a Rare monster, you gain its Modifiers for 60 seconds
+
+Replica Headhunter
+40	+(25-40) to maximum Life+(40-55) to Strength
++(40-55) to Dexterity
++(50-60) to maximum Life
+(20-30)% increased Damage with Hits against Magic monsters
+20% chance when you Kill a Magic Monster to gain its Modifiers for 60 seconds
+
+Daresso's Passion
+43	+25% to Global Critical Strike MultiplierAdds (30-38) to (40-50) Physical Damage
+Adds (30-38) to (40-50) Cold Damage
+20% reduced Frenzy Charge Duration
+25% chance to gain a Frenzy Charge on Kill
+(60-80)% increased Damage while you have no Frenzy Charges
+
+Haemophilia
+43	+(20-30) to Strength
+25% increased Damage over Time
+Attacks have 25% chance to cause Bleeding
+(25-40)% increased Attack Damage against Bleeding Enemies
+Bleeding Enemies you Kill Explode, dealing 5% of
+their Maximum Life as Physical Damage
+25% reduced Bleeding Duration
+
+Maligaro's Restraint
+44	+(9-20) to maximum Energy ShieldAdds 1 to (30-50) Lightning Damage to Attacks
+100% increased Shock Duration on you
+Shocks you cause are reflected back to you
+60% increased Damage while Shocked
+15% increased Movement Speed while Shocked
+
+The Blood Dance
+44	+(30-40) to Dexterity
+20% increased Movement Speed
+2% increased Movement Speed per Frenzy Charge
+4% reduced Attack and Cast Speed per Frenzy Charge
+Regenerate 0.8% of Life per second per Frenzy Charge
+(20-30)% chance to gain a Frenzy Charge on Kill
+(20-30)% increased Damage per Frenzy Charge with Hits against Enemies on Low Life
+Gore Footprints
+
+Precursor's Emblem
+49	+(12-16)% to Fire and Cold Resistances5% increased maximum Energy Shield
+5% increased maximum Life
++20 to Strength and Dexterity
+<Two Endurance Charge mods and one Frenzy Charge Mod>
+or
+<One Endurance Charge mod and Two Frenzy Charge Mods
+
+Precursor's Emblem
+49	+(12-16)% to Fire and Lightning Resistances5% increased maximum Energy Shield
+5% increased maximum Life
++20 to Strength and Intelligence
+<Two Endurance Charge mods and one Power Charge Mod>
+or
+<One Endurance Charge mod and Two Power Charge Mods>
+
+Precursor's Emblem
+49	+(20-30)% to Fire Resistance+20 to Strength
+5% increased maximum Energy Shield
+5% increased maximum Life
+<Three Endurance Charge mods>
+
+Precursor's Emblem
+49	+(8-10)% to all Elemental Resistances+20 to all Attributes
+5% increased maximum Energy Shield
+5% increased maximum Life
+<One Endurance Charge mod>
+<One Frenzy Charge mod>
+<One Power Charge mod>
+
+Precursor's Emblem
+49	+(12-16)% to Cold and Lightning Resistances5% increased maximum Energy Shield
+5% increased maximum Life
++20 to Dexterity and Intelligence
+<Two Frenzy Charge mods and one Power Charge Mod>
+or
+<One Frenzy Charge mod and Two Power Charge Mods>
+
+Precursor's Emblem
+49	+(20-30)% to Cold Resistance+20 to Dexterity
+5% increased maximum Energy Shield
+5% increased maximum Life
+<Three Frenzy Charge mods>
+
+Precursor's Emblem
+49	+(20-30)% to Lightning Resistance+20 to Intelligence
+5% increased maximum Energy Shield
+5% increased maximum Life
+<Three Power Charge mods>
+
+Bronn's Lithe
+53	+5 to Level of Socketed Movement Gems
+10% increased Attack Speed
+(60-100)% increased Damage with Movement Skills
+(200-250)% increased Evasion Rating
+10% increased Movement Speed
+
+Maloney's Nightfall
+55	Gain (10-15)% of Physical Damage as Extra Chaos Damage10% increased Attack Speed
++(50-70) to maximum Life
++(12-16)% to Chaos Resistance
+(8-10) to (14-16) Added Physical Damage with Bow Attacks
+25% chance to create a Smoke Cloud when Hit
+(40-60)% increased Damage with Hits and Ailments against Blinded Enemies
+
+Temptation Step
+55	(170-250)% increased Evasion Rating
++(19-29)% to Chaos Resistance
+15% increased Damage for each Poison on you up to a maximum of 75%
+10% increased Movement Speed for each Poison on you up to a maximum of 50%
+Poison you inflict with Travel Skills is Reflected to you if you
+have fewer than 5 Poisons on you
+
+Offering to the Serpent
+57	<One to three random Synthesis implicit modifiers>+(15-25) to all Attributes
+(150-200)% increased Armour and Energy Shield
+50% reduced Maximum Recovery per Life Leech
+(6-10)% increased Attack and Cast Speed
+(15-25)% increased Damage while Leeching
+Life Leech effects are not removed when Unreserved Life is Filled
+
+The Crimson Storm
+57	6% increased Movement Speed(60-80)% increased Physical Damage
+(25-35)% increased Critical Strike Chance
+50% chance to inflict Bleeding on Critical Strike with Attacks
+Enemies you inflict Bleeding on grant (60-100)% increased Flask Charges
+Adds (100-120) to (150-165) Physical Damage against Bleeding Enemies
+50% chance to Maim Enemies on Critical Strike with Attacks
+of the Veil (suffix)
+
+Gang's Momentum
+58	(160-180)% increased Armour and Energy Shield
++(50-60)% to Fire Resistance
+25% increased Movement Speed
+(10-15)% chance to Ignite
+(25-40)% increased Damage with Hits and Ailments against Ignited Enemies
+
+Mistwall
+60	6% increased Movement Speed(120-150)% increased Evasion Rating
+10% increased Movement Speed
++(10-20)% to Fire and Cold Resistances
++(8-15)% chance to Avoid Elemental Damage from Hits while Phasing
+You are at Maximum Chance to Block Attack Damage if you have not Blocked Recently
+You have Phasing if you have Blocked Recently
+
+Starkonja's Head
+60	+(50-70) to Dexterity
+50% reduced Damage when on Low Life
+10% increased Attack Speed
+25% increased Global Critical Strike Chance
+(100-130)% increased Evasion Rating
++(80-100) to maximum Life
+150% increased Global Evasion Rating when on Low Life
+
+The Wasp Nest
+60	Grants 40 Life per Enemy Hit(150-170)% increased Physical Damage
+(20-25)% increased Attack Speed
+(20-25)% increased Critical Strike Chance
++(330-350) to Accuracy Rating
+20% chance to Poison on Hit
+Attacks with this Weapon deal 80 to 120 added Chaos Damage against
+Enemies affected by at least 5 Poisons
+
+Inya's Epiphany
+61	+(50-70) to maximum Life
+25% increased Movement Speed
+(5-8)% increased Intelligence
+5% increased Damage per Power Charge
+25% chance that if you would gain Power Charges, you instead gain up to
+your maximum number of Power Charges
+
+Kondo's Pride
+61	+25% to Global Critical Strike Multiplier(220-250)% increased Physical Damage
+0.6% of Physical Attack Damage Leeched as Life
+50% increased Melee Damage against Bleeding Enemies
+Cannot Leech Life from Critical Strikes
+30% chance to Blind Enemies on Critical Strike
+50% chance to cause Bleeding on Critical Strike
+
+Replica Inya's Epiphany
+61	+(50-70) to maximum Life
+Regenerate 0.5% of Life per second per Power Charge
+(5-8)% increased Intelligence
+5% increased Damage per Power Charge
+5% increased Movement Speed per Power Charge
+
+Singularity
+62	30% increased Elemental DamageAdds (1-10) to (150-200) Lightning Damage to Spells
+(14-18)% increased Cast Speed
+(6-8)% reduced Mana Cost of Skills
+Nearby Enemies are Hindered, with 25% reduced Movement Speed
+100% increased Damage with Hits and Ailments against Hindered Enemies
+
+Doryani's Fist
+63	Grants Level 20 Doryani's Touch Skill
++(80-100) to maximum Energy Shield
+30% chance to Shock
+Adds (150-225) to (525-600) Lightning Damage to Unarmed Melee Hits
+Adds (90-135) to (315-360) Lightning Damage to Spells while Unarmed
++(200-250) Energy Shield gained on Killing a Shocked Enemy
+30% increased Effect of Lightning Ailments
+
+The Broken Crown
+63	Socketed Gems are supported by Level 20 Cast on Death
++(10-15) to all Attributes
+20% increased Damage when on Low Life
+(60-100)% increased Armour and Energy Shield
++(50-70) to maximum Energy Shield
+20% reduced Mana Regeneration Rate
++(43-61)% to Chaos Resistance
+
+Saqawal's Winds
+64	(140-180)% increased Armour and Energy Shield
++(30-60) to maximum Life
++(20-25)% to Cold and Lightning Resistances
++(-2.00-2.00) seconds to Avian's Might Duration
+Adds (20-25) to (37-40) Cold Damage while you have Avian's Might
+Adds (1-3) to (55-62) Lightning Damage while you have Avian's Might
+
+Fenumus' Shroud
+67	+(30-40) to Intelligence
+(120-140)% increased Energy Shield
+Regenerate (80-100) Energy Shield per second
+Enemies affected by your Spider's Webs deal 10% reduced Damage
+Enemies affected by your Spider's Webs have -10% to All Resistances
+(50-70)% increased Aspect of the Spider Area of Effect
+
+Rigwald's Savagery
+67	Adds (50-70) to (135-165) Physical Damage
+40% increased Physical Attack Damage while Dual Wielding
+(10-15)% increased Attack Speed
++10 to Maximum Rage while wielding a Sword
+
+Steppan Eard
+67	+(20-30) to maximum Energy Shield
+(50-80)% increased Energy Shield
+30% increased Movement Speed
+20% increased Movement Speed on Shocked Ground
+50% increased Damage on Burning Ground
+Regenerate 2% of Life per second on Chilled Ground
+Unaffected by Desecrated Ground
+
+Cyclopean Coil
+68	+(25-40) to maximum Life+(60-80) to maximum Life
+(5-15)% increased Attributes
+Cannot be Frozen if Dexterity is higher than Intelligence
+Cannot be Ignited if Strength is higher than Dexterity
+Cannot be Shocked if Intelligence is higher than Strength
+1% increased Damage per 5 of your lowest Attribute
+
+Eye of Innocence
+68	+(16-24) to Strength and Dexterity10% chance to Ignite
+(50-70)% increased Damage while Ignited
+Take 100 Fire Damage when you Ignite an Enemy
+2% of Fire Damage Leeched as Life while Ignited
+
+Inpulsa's Broken Heart
+68	+(60-80) to maximum Life
+(20-50)% increased Damage if you have Shocked an Enemy Recently
+(15-25)% increased Effect of Shock
+Shocked Enemies you Kill Explode, dealing 5% of
+their Life as Lightning Damage which cannot Shock
+Unaffected by Shock
+
+The Infinite Pursuit
+68	20% increased Movement Speed
+Moving while Bleeding doesn't cause you to take extra Damage
+20% increased Movement Speed while Bleeding
+50% chance to be inflicted with Bleeding when Hit by an Attack
+Bleeding on you expires 75% slower while Moving
+Cannot be Stunned while Bleeding
+Cannot be Poisoned while Bleeding
+
+Craiceann's Pincers
+69	(150-200)% increased Armour
+Regenerate (50-70) Life per second
++(30-40)% to Fire Resistance
+3% increased Damage per Crab Barrier
+10% chance that if you would gain a Crab Barrier, you instead gain up to
+your maximum number of Crab Barriers
+
+Beacon of Madness
+70	+(8-12)% to Fire and Cold ResistancesGrants Level 1 Embrace Madness Skill
+(150-300)% increased Armour and Evasion
+30% increased Movement Speed
+20% chance to deal Double Damage while affected by Glorious Madness
++15 to maximum Fortification while affected by Glorious Madness
+
+Mercenary's Lot
+70	+(80-120) to Evasion Rating
+(5-8)% increased Attack and Cast Speed
+Mark Skills have (10-15)% increased Cast Speed
+(30-50)% increased Damage with Hits and Ailments against Marked Enemy
+8% of Damage from Hits is taken from Marked Target's Life before you
+Your Mark Transfers to another Enemy when Marked Enemy dies
+
+Bloodgrip
+74	Regenerate (1.2-1.6)% of Life per secondAdds 10 to 20 Physical Damage to Attacks
++(60-70) to maximum Life
+Regenerate (16-24) Life per second
+100% increased Life Recovery from Flasks
+Moving while Bleeding doesn't cause you to take extra Damage
+
+Stormfire
+80	(15-25)% increased Elemental Damage(40-45)% increased Mana Regeneration Rate
++(20-30)% to Fire and Lightning Resistances
+(8-12)% increased Burning Damage for each time you have Shocked a Non-Shocked Enemy Recently, up to a maximum of 120%
+Adds (1-3) to (62-70) Lightning Damage to Hits against Ignited Enemies
+Your Lightning Damage can Ignite
+Other unique items
+Unique items that otherwise interact with all damage types, but don't fit any of the above categories.
+
+No results found
+
+Passive skills
+Certain passive skills and many Ascendancy class passives grant increased Damage under certain conditions.
+
+Ascendancy
+Class	Name	Stats
+—	Axe Damage
+
+14% increased Physical Damage with Axes
+Axe Attacks deal 14% increased Damage with Ailments
+18% increased Physical Damage with Axes
+Axe Attacks deal 18% increased Damage with Ailments
+Axe Attacks deal 12% increased Damage with Hits and Ailments
+—	Axe Damage and Accuracy
+
+Axe Attacks deal 10% increased Damage with Hits and Ailments
+10% increased Accuracy Rating with Axes
+—	Axe Damage and Attack Speed
+
+12% increased Physical Damage with Axes
+3% increased Attack Speed with Axes
+Axe Attacks deal 12% increased Damage with Ailments
+Axe Attacks deal 8% increased Damage with Hits and Ailments
+4% increased Attack Speed with Axes
+—	Axe Damage and Critical Strike Chance
+
+Axe Attacks deal 10% increased Damage with Hits and Ailments
+25% increased Critical Strike Chance with Axes
+—	Axe Damage and Impale Chance
+
+14% increased Physical Damage with Axes
+Axe Attacks deal 14% increased Damage with Ailments
+10% chance to Impale Enemies on Hit with Attacks
+—	Brand Damage
+
+12% increased Brand Damage
+—	Brand Damage and Duration
+
+10% increased Brand Damage
+Brand Skills have 10% increased Duration
+—	Claw Ailment Damage and Poison Chance
+
+10% chance to Poison on Hit with Attacks
+Claw Attacks deal 15% increased Damage with Ailments
+—	Claw Ailment Damage and Poison Duration
+
+Claw Attacks deal 15% increased Damage with Ailments
+5% increased Poison Duration
+—	Claw Damage
+
+Claw Attacks deal 12% increased Damage with Hits and Ailments
+—	Claw Damage and Attack Speed
+
+Claw Attacks deal 8% increased Damage with Hits and Ailments
+4% increased Attack Speed with Claws
+—	Dagger Ailment Damage
+
+Dagger Attacks deal 16% increased Damage with Ailments
+—	Dagger Ailment Damage and Poison Chance
+
+15% chance to Poison on Hit with Attacks
+Dagger Attacks deal 20% increased Damage with Ailments
+—	Dagger Damage
+
+Dagger Attacks deal 12% increased Damage with Hits and Ailments
+—	Dagger Damage and Attack Speed
+
+Dagger Attacks deal 8% increased Damage with Hits and Ailments
+4% increased Attack Speed with Daggers
+—	Dagger Damage and Movement Speed
+
+Dagger Attacks deal 10% increased Damage with Hits and Ailments
+3% increased Movement Speed
+—	Damage against Marked Enemy
+
+20% increased Damage with Hits and Ailments against Marked Enemy
+—	Damage and Energy Shield
+
+14% increased Damage
++12 to maximum Energy Shield
+12% increased Damage
++10 to maximum Energy Shield
+—	Damage and Mana
+
+12% increased Damage
++10 to maximum Mana
+14% increased Damage
++14 to maximum Mana
+—	Damage if Consumed a Corpse
+
+14% increased Damage if you have Consumed a corpse Recently
+16% increased Damage if you have Consumed a corpse Recently
+—	Faster Ailments
+
+Damaging Ailments deal damage 5% faster
+—	Herald and Minion Damage
+
+Herald Skills deal 20% increased Damage
+Minions deal 20% increased Damage while you are affected by a Herald
+—	Mace Damage
+
+14% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 14% increased Damage with Ailments
+Mace or Sceptre Attacks deal 14% increased Damage with Hits and Ailments
+—	Mace Damage and Area of Effect
+
+Mace or Sceptre Attacks deal 10% increased Damage with Hits and Ailments
+8% increased Area of Effect
+14% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 14% increased Damage with Ailments
+8% increased Area of Effect
+—	Mace Damage and Attack Speed
+
+Mace or Sceptre Attacks deal 8% increased Damage with Hits and Ailments
+3% increased Attack Speed with Maces or Sceptres
+—	Mace Damage and Critical Strike Chance
+
+10% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 10% increased Damage with Ailments
+20% increased Critical Strike Chance with Maces or Sceptres
+—	Mace Damage and Reduced Enemy Stun Threshold
+
+16% increased Physical Damage with Maces or Sceptres
+5% reduced Enemy Stun Threshold with Maces or Sceptres
+Mace or Sceptre Attacks deal 16% increased Damage with Ailments
+16% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 16% increased Damage with Ailments
+10% reduced Enemy Stun Threshold with Maces or Sceptres
+—	Mace Damage and Stun Duration
+
+16% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 16% increased Damage with Ailments
+20% increased Stun Duration on Enemies
+12% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 12% increased Damage with Ailments
+10% increased Stun Duration on Enemies
+16% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 16% increased Damage with Ailments
+10% chance to double Stun Duration
+—	Melee Damage
+
+12% increased Melee Physical Damage
+16% increased Melee Physical Damage
+12% increased Melee Physical Damage
+Attacks with Melee Weapons deal 12% increased Damage with Ailments
+4% increased Melee Physical Damage
+Attacks with Melee Weapons deal 4% increased Damage with Ailments
+—	Melee Damage and Life
+
+16% increased Melee Physical Damage
++16 to maximum Life
+—	One Handed Damage
+
+14% increased Damage with One Handed Weapons
+Attacks with One Handed Weapons deal 20% increased Damage with Ailments
+—	One Handed Melee Damage
+
+16% increased Physical Damage with One Handed Melee Weapons
+Attacks with One Handed Melee Weapons deal 16% increased Damage with Ailments
+—	Priest of Kopec
+
+Vaal Skills require 40% increased Souls per Use
+Vaal Skills can store +1 Use
+Vaal Skills deal 1% more Damage per Soul Required
+—	Retaliation Skill Damage
+
+Retaliation Skills deal 16% increased Damage
+Retaliation Skills deal 20% increased Damage
+—	Retaliation Skill Damage and Shield Block
+
+Retaliation Skills deal 12% increased Damage
++3% Chance to Block Attack Damage while holding a Shield
+—	Retaliation Skill Damage and Stun Threshold
+
+Retaliation Skills have 10% reduced Enemy Stun Threshold
+Retaliation Skills deal 15% increased Damage
+—	Staff Critical Strike Chance
+
+30% increased Global Critical Strike Chance while wielding a Staff
+—	Staff Damage and Armour
+
+Staff Attacks deal 15% increased Damage with Hits and Ailments
+15% increased Armour
+—	Staff Damage and Block
+
+Staff Attacks deal 10% increased Damage with Hits and Ailments
++2% Chance to Block Attack Damage while wielding a Staff
+—	Staff Damage and Stun Duration
+
+Staff Attacks deal 16% increased Damage with Hits and Ailments
+10% increased Stun Duration with Staves on Enemies
+—	Staff Spell Damage
+
+12% increased Spell Damage while wielding a Staff
+—	Staff Spell Damage and Block
+
+10% increased Spell Damage while wielding a Staff
++3% Chance to Block Attack Damage while wielding a Staff
+—	Staff Spell Damage and Spell Block
+
+10% increased Spell Damage while wielding a Staff
++3% Chance to Block Spell Damage while wielding a Staff
+—	Sword Damage
+
+16% increased Physical Damage with Swords
+Sword Attacks deal 16% increased Damage with Ailments
+Sword Attacks deal 12% increased Damage with Hits and Ailments
+14% increased Physical Damage with Swords
+Sword Attacks deal 14% increased Damage with Ailments
+Sword Attacks deal 14% increased Damage with Hits and Ailments
+—	Sword Damage and Attack Speed
+
+10% increased Physical Damage with Swords
+4% increased Attack Speed with Swords
+Sword Attacks deal 10% increased Damage with Ailments
+—	Sword Damage and Block
+
+Sword Attacks deal 12% increased Damage with Hits and Ailments
++2% Chance to Block Attack Damage while Dual Wielding or holding a Shield
+—	Sword Damage and Melee Range
+
+Sword Attacks deal 10% increased Damage with Hits and Ailments
++0.1 metres to Melee Strike Range with Swords
+—	Two Handed Melee Damage
+
+16% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 16% increased Damage with Ailments
+14% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 14% increased Damage with Ailments
+12% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 12% increased Damage with Ailments
+—	Two Handed Melee Damage and Area of Effect
+
+12% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 12% increased Damage with Ailments
+5% increased Area of Effect
+—	Two Handed Melee Damage and Attack Speed
+
+12% increased Physical Damage with Two Handed Melee Weapons
+3% increased Attack Speed with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 12% increased Damage with Ailments
+—	Two Handed Melee Damage and Ignore Physical Damage Reduction
+
+14% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 14% increased Damage with Ailments
+Hits have 15% chance to ignore Enemy Physical Damage Reduction
+—	Two Handed Melee Damage and Leech
+
+12% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 12% increased Damage with Ailments
+0.8% of Physical Attack Damage Leeched as Life
+12% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 12% increased Damage with Ailments
+0.4% of Physical Attack Damage Leeched as Life
+—	Two Handed Melee Damage and Life Leech Speed
+
+12% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 12% increased Damage with Ailments
+60% increased total Recovery per second from Life Leech
+—	Two Handed Melee Damage and Reduced Enemy Stun Threshold
+
+14% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 14% increased Damage with Ailments
+5% reduced Enemy Stun Threshold
+—	Two Handed Melee Damage and Stun Duration
+
+10% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 10% increased Damage with Ailments
+10% increased Stun Duration with Two Handed Melee Weapons on Enemies
+14% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 14% increased Damage with Ailments
+20% increased Stun Duration with Two Handed Melee Weapons on Enemies
+—	Wand Damage
+
+14% increased Damage while wielding a Wand
+Wand Attacks deal 16% increased Damage with Hits and Ailments
+Wand Attacks deal 12% increased Damage with Hits and Ailments
+—	Wand Damage and Attack Speed
+
+10% increased Damage while wielding a Wand
+4% increased Attack Speed with Wands
+—	Wand Physical Damage
+
+12% increased Physical Damage with Wands
+Wand Attacks deal 12% increased Damage with Ailments
+—	Wand Physical Damage and Attack Speed
+
+12% increased Physical Damage with Wands
+Wand Attacks deal 12% increased Damage with Ailments
+4% increased Attack Speed with Wands
+—	Admonisher
+
+50% increased Warcry Speed
+15% increased Damage for each time you've Warcried Recently
+—	Blacksmith's Clout
+
+35% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 35% increased Damage with Ailments
++35% to Critical Strike Multiplier with Maces or Sceptres
+—	Blade Master
+
+20% increased Physical Damage with Swords
+8% increased Attack Speed with Swords
++200 to Accuracy Rating with Swords
+Sword Attacks deal 20% increased Damage with Ailments
+—	Bladedancer
+
+Sword Attacks deal 30% increased Damage with Hits and Ailments
++0.3 metres to Melee Strike Range with Swords
+—	Bone Breaker
+
+30% increased Physical Damage with Maces or Sceptres
+15% increased Area of Effect
+Mace or Sceptre Attacks deal 30% increased Damage with Ailments
+—	Brutal Blade
+
+Sword Attacks deal 24% increased Damage with Hits and Ailments
++6% Chance to Block Attack Damage while Dual Wielding or holding a Shield
+20% chance to gain a Frenzy Charge when you Block Attack Damage
+—	Butchery
+
+25% increased Physical Damage with Two Handed Melee Weapons
++20 to Strength
+5% increased Attack Speed with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 25% increased Damage with Ailments
+—	Claws of the Magpie
+
+Claw Attacks deal 25% increased Damage with Hits and Ailments
+10% increased Attack Speed with Claws
+25% chance to Steal Power, Frenzy, and Endurance Charges on Hit with Claws
+—	Cleaving
+
+30% increased Physical Damage with Axes
+Axe Attacks deal 30% increased Damage with Ailments
+15% chance to Intimidate Enemies for 4 seconds on Hit with Attacks
+—	Coldhearted Calculation
+
+20% increased Mana Regeneration Rate
++20 to Intelligence
+12% increased Damage
+—	Concussive Force
+
+Ignites from Stunning Melee Hits deal 20% more Damage
+Hits Stun as though dealing 50% more Melee Fire Damage
+—	Deadly Draw
+
+Damaging Ailments deal damage 10% faster
+30% increased Damage Over Time with Bow Skills
+—	Destroyer
+
+25% increased Physical Damage with Two Handed Melee Weapons
+5% increased Attack Speed with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 25% increased Damage with Ailments
+25% increased Stun Duration with Two Handed Melee Weapons on Enemies
+—	Dirty Techniques
+
+Damaging Ailments deal damage 15% faster
+—	Disciple of the Forbidden
+
++1 to Minimum Power Charges
+8% chance to gain a Power Charge on Kill
+8% increased Damage per Power Charge
+—	Disciple of the Slaughter
+
++1 to Minimum Frenzy Charges
+8% chance to gain a Frenzy Charge on Kill
+8% increased Damage per Frenzy Charge
+—	Disciple of the Unyielding
+
++1 to Minimum Endurance Charges
+8% chance to gain an Endurance Charge on Kill
+8% increased Damage per Endurance Charge
+—	Discord Artisan
+
+15% increased Damage for each Herald affecting you
+20% increased Effect of Herald Buffs on you
+—	Enigmatic Defence
+
+20% increased Spell Damage while wielding a Staff
++8% Chance to Block Attack Damage while wielding a Staff
++8% Chance to Block Spell Damage while wielding a Staff
+—	Farewell to Flesh
+
+Herald Skills have 2% more Buff Effect for every 1% of Maximum Mana they Reserve
+Herald Skills and Minions from Herald Skills deal 1% more Damage for every 1% of Maximum Life those Skills Reserve
+—	Feller of Foes
+
+Axe Attacks deal 30% increased Damage with Hits and Ailments
++40% to Critical Strike Multiplier with Axes
++200 to Accuracy Rating with Axes
+—	Flaying
+
+Dagger Attacks deal 24% increased Damage with Hits and Ailments
+12% increased Attack Speed with Daggers
+18% increased Accuracy Rating with Daggers
+—	Flow of Battle
+
+Gain 5 Rage on Hit with Retaliation Skills
+Retaliation Skills deal 30% increased Damage
+—	Glacial Cage
+
+Enemies permanently take 1% increased Damage for each second they've ever been Chilled by you, up to a maximum of 10%
+—	Harvester of Foes
+
+30% increased Physical Damage with Axes
+Axe Attacks deal 30% increased Damage with Ailments
+12% increased Impale Effect
+—	Hatchet Master
+
+Axe Attacks deal 24% increased Damage with Hits and Ailments
+10% increased Attack Speed with Axes
+20% chance to gain Onslaught for 4 seconds on Kill
+—	Kinetic Impacts
+
+25% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 25% increased Damage with Ailments
+5% chance to deal Double Damage
+10% chance to double Stun Duration
+—	Light Eater
+
+0.8% of Spell Damage Leeched as Energy Shield
+30% increased Maximum total Energy Shield Recovery per second from Leech
+24% increased Damage while on Full Energy Shield
+—	Martial Experience
+
+30% increased Physical Damage with Two Handed Melee Weapons
+Attacks with Two Handed Melee Weapons deal 30% increased Damage with Ailments
+100% increased total Recovery per second from Life Leech
+Hits have 30% chance to ignore Enemy Physical Damage Reduction
+—	Packed with Energy
+
+When you interact with Voltaxic Sulphite Veins or Chests in your Maps gain Sulphite Intoxication for each Voltaxic Sulphite Vein or Chest found
+—	Poisonous Fangs
+
++10% to Damage over Time Multiplier for Poison
+Claw Attacks deal 25% increased Damage with Ailments
+6% increased Attack Speed with Claws
+—	Razor's Edge
+
+35% increased Physical Damage with Swords
+Sword Attacks deal 35% increased Damage with Ailments
+Hits have 35% chance to ignore Enemy Physical Damage Reduction
+—	Retribution
+
++10 to Strength and Intelligence
+15% increased Damage
+5% increased Attack and Cast Speed
+Minions deal 15% increased Damage
+—	Ribcage Crusher
+
+Mace or Sceptre Attacks deal 24% increased Damage with Hits and Ailments
+6% increased Attack Speed with Maces or Sceptres
+15% increased Area of Effect if you have Stunned an Enemy Recently
+—	Skull Cracking
+
+36% increased Physical Damage with Maces or Sceptres
+12% reduced Enemy Stun Threshold with Maces or Sceptres
+Mace or Sceptre Attacks deal 36% increased Damage with Ailments
+—	Slaughter
+
+25% increased Physical Damage with Axes
+Axe Attacks deal 25% increased Damage with Ailments
+8% increased Attack Speed with Axes
+Gain 1 Rage on Hit with Axes
+—	Sleight of Hand
+
+20% increased Damage with One Handed Weapons
+8% increased Attack Speed with One Handed Weapons
+Attacks with One Handed Weapons deal 30% increased Damage with Ailments
+—	Smashing Strikes
+
+Staff Attacks deal 30% increased Damage with Hits and Ailments
+10% chance to gain an Endurance Charge on Melee Critical Strike
+30% increased Critical Strike Chance with Staves
+—	Spinecruncher
+
+30% increased Physical Damage with Maces or Sceptres
+Mace or Sceptre Attacks deal 30% increased Damage with Ailments
+100% increased Stun Duration against Enemies that are on Full Life
+—	Static Blows
+
+30% increased Damage if you have Shocked an Enemy Recently
+30% increased Effect of Lightning Ailments
+50% increased Duration of Lightning Ailments
+—	Steelwood Stance
+
+Staff Attacks deal 30% increased Damage with Hits and Ailments
++800 Armour if you've Blocked Recently
++10% Chance to Block Attack Damage while wielding a Staff
+—	Strong Arm
+
++20 to Strength
+25% increased Physical Damage with One Handed Melee Weapons
+5% increased Attack Speed with One Handed Melee Weapons
+Attacks with One Handed Melee Weapons deal 25% increased Damage with Ailments
+—	The Primal Owl
+
+Skills supported by Unleash have +3 to maximum number of Seals
+Unsealed Spells gain 5% more Damage each time their effects Reoccur
+—	Trickery
+
+20% increased Critical Strike Chance
+20% increased Damage
++10 to Dexterity and Intelligence
+—	Undertaker
+
+30% increased Damage if you have Consumed a corpse Recently
+Regenerate 2% of Life per second if you've Consumed a corpse Recently
+Desecrate and Unearth have +2 to Maximum number of corpses allowed
+—	Unimaginable Horrors
+
+Unique Bosses in Vaal Side Areas in your Maps have 100% more Life
+Unique Bosses in Vaal Side Areas in your Maps deal 30% more Damage
+Vaal Side Areas in your Maps have 20% chance for Rewards from Vaal Vessels to be Duplicated
+—	Wandslinger
+
+30% increased Damage while wielding a Wand
+10% increased Attack Speed with Wands
+—	Winter's Embrace
+
+60% increased Freeze Duration on Enemies
+30% increased Damage if you've Shattered an Enemy Recently
+—	Wrecking Ball
+
+Attacks with Two Handed Melee Weapons deal 25% increased Damage with Hits and Ailments
+10% increased Attack Speed with Two Handed Melee Weapons
+40% increased Stun Duration with Two Handed Melee Weapons on Enemies
+Ascendant
+	Berserker
+
+Inherent Rage Loss starts 1 second later
+Cannot be Stunned while you have at least 25 Rage
+15% more Damage
+5% increased Damage taken
+2% of Attack Damage Leeched as Life and Mana if you've Killed Recently
+Ascendant
+	Juggernaut
+
+Gain 1 Endurance Charge every second if you've been Hit Recently
+Cannot be Chilled
+5% increased Damage per Endurance Charge
++1000 to Accuracy Rating
+Cannot be Stunned
+Ascendant
+	Trickster
+
+2% of Damage Leeched as Energy Shield
+2% more Damage for each different type of Mastery you have Allocated
+Prevent +6% of Suppressed Spell Damage while on Full Energy Shield
+Nearby Enemy Monsters' Action Speed is at most 90% of base value
+Assassin
+	Opportunistic
+
+Damage from your Critical Strikes cannot be Reflected
+35% less Damage taken while there are at least two Rare or Unique Enemies nearby
+25% more Damage while there is at most one Rare or Unique Enemy nearby
+Assassin
+	Toxic Delivery
+
+Poison you inflict with Critical Strikes deals 20% more Damage
+5% increased Poison Duration for each Poison you have inflicted Recently, up
+to a maximum of 100%
+Recover 0.5% of Life per Poison affecting Enemies you Kill
+Berserker
+	Aspect of Carnage
+
+10% increased Damage taken
+40% more Damage
+Gladiator
+	Attack Speed and One Handed Damage
+
+5% increased Attack Speed
+10% increased Damage with One Handed Weapons
+Gladiator
+	Weapon Master
+
+20% more Area of Effect while wielding a Mace or Sceptre
+30% more Damage with Hits and Ailments against Enemies that are on Low Life while you are wielding an Axe
+25% more Accuracy Rating while wielding a Sword
+20% of Leech is Instant while wielding a Claw
+20% more Critical Strike Chance while wielding a Dagger
+Hierophant
+	Mana Regeneration, Brand Damage
+
+20% increased Mana Regeneration Rate
+14% increased Brand Damage
+Hierophant
+	Ritual of Awakening
+
+You and your Totems Regenerate 1% of Life per second for each Summoned Totem
+Regenerate 0.5% of Mana per second for each Summoned Totem
+5% more Damage per Summoned Totem
+Juggernaut
+	Unyielding
+
+8% increased Damage per Endurance Charge
+25% chance to gain an Endurance Charge when you Stun an Enemy
+10% increased Stun Duration on Enemies per Endurance Charge
+6% increased Area of Effect per Endurance Charge
+Necromancer
+	Commander of Darkness
+
+Auras from your Skills grant 3% increased Attack and Cast
+Speed to you and Allies
+You and nearby Allies have +30% to Elemental Resistances
+You and nearby Allies deal 30% increased Damage
+Necromancer
+	Plaguebringer
+
+With at least one nearby corpse, nearby Enemies deal 10% reduced Damage
+With at least one nearby corpse, you and nearby Allies deal 10% more Damage
+If you've Consumed a corpse Recently, you and your Minions have 30% increased Area of Effect
+Occultist
+	Forbidden Power
+
++1 to Maximum Power Charges
+6% increased Area of Effect per Power Charge
+6% increased Damage per Power Charge
+Gain a Power Charge after Spending a total of 200 Mana
+Occultist
+	Frigid Wake
+
+15% more Cold Damage
+Cannot be Chilled
+Cannot be Frozen
+Every 4 seconds, 50% chance to Freeze nearby Non-Frozen Enemies for 0.4 seconds
+Nearby Chilled Enemies deal 10% reduced Damage with Hits
+Saboteur
+	Perfect Crime
+
+35% less Damage with Triggered Spells
+Triggers Level 20 Summon Triggerbots when Allocated
+Slayer
+	Bane of Legends
+
+20% more Damage with Hits and Ailments against Unique Enemies
+10% more Damage if you've Killed Recently
+Cannot take Reflected Physical Damage
+Slayer
+	Impact
+
+5% increased Area of Effect per Enemy killed recently, up to 50%
++0.4 metres to Melee Strike Range
+50% increased Global Accuracy Rating
+Deal up to 15% more Melee Damage to Enemies, based on proximity
+Trickster
+	Evasion and Energy Shield, Damage
+
+14% increased Evasion Rating
+5% increased maximum Energy Shield
+10% increased Damage
+Trickster
+	Polymath
+
+2% more Damage for each different type of Mastery you have Allocated
+Recover 1% of Life on Kill for each different type of Mastery you have Allocated
+Recover 1% of Mana on Kill for each different type of Mastery you have Allocated
+Recover 1% of Energy Shield on Kill for each different type of Mastery you have Allocated
+Version history
+Version	Changes
+0.5.5	
+Major improvements to damage system.
+0.5.2	
+Fixed several calculation problems in damage chain.
+References
+ Bex_GGG (December 22, 2015). "Recent Community Questions Answered!". Official Path of Exile Forums. Retrieved December 23, 2015.
+ https://www.pathofexile.com/forum/view-thread/3414849/filter-account-type/staff
+Categories: Pages needing cleanupDamage
+Navigation menu
+Create account
+Log in
+PageDiscussionPath of Exile 2 Wiki
+ReadView sourceHistory
+Search Path of Exile Wiki
+Main page
+Community portal
+Recent changes
+Random article
+Wiki Discord
+PoE Links
+Official
+Trade
+Forums
+Websites
+Apps
+PoE2 Wiki
+Tools
+What links here
+Related changes
+Special pages
+Printable version
+Permanent link
+Page information
+Page values
+This page was last edited on 28 July 2025, at 20:49.
+Content is available under Creative Commons Attribution-NonCommercial 3.0 Unported unless otherwise noted.
+Privacy policyAbout Path of Exile WikiDisclaimers
+Creative Commons Attribution-NonCommercial 3.0 UnportedPowered by MediaWiki

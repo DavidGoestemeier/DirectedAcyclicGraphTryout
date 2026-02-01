@@ -1,0 +1,928 @@
+
+[dismiss]
+If you'd like to help out, please check the Community Portal and our getting started guide. Also, check out our sister project on poe2wiki.net.
+
+Modifier
+Jump to navigationJump to search
+Modifiers generally change various aspects of the entity they are affecting. Most commonly modifiers apply stats, however they can also apply buffs or grant skills and can often be found on items, monsters, strongboxes or areas.
+
+A modifier should be seen as an instance of change applied to an entity. A basic modifier does nothing on its own, it is given the effect by the associated stats (and their values), buffs and skills.
+
+
+Contents
+1	Mechanics overview
+2	Local and global
+2.1	Local
+2.2	Global
+3	Terminology
+3.1	Examples
+4	Types of modifiers
+4.1	Implicit modifiers
+4.2	Enchantments
+4.3	Scourge mods
+4.4	Explicit modifiers
+5	Conditions
+5.1	Domain
+5.2	Generation type
+5.3	Mod Level
+5.4	Group/family
+5.5	Tags
+5.6	Spawn weight tag
+5.7	Mod tag
+5.7.1	Metamods
+5.7.2	Catalyst
+5.7.3	Heist Enchantments
+5.7.4	Harvest Crafting
+6	Modifier Tier Rating
+6.1	Redistribution model
+6.2	Refactored weight model
+7	Version history
+8	See also
+9	References
+Mechanics overview
+A modifier applies statistics, a buff or grants a skill to an entity. Modifiers are specific to items, monsters, strongboxes or areas.
+
+Since not all statistics have a visible text, it is possible that some effects are granted by the modifier but are not visible to the player. On the wiki, some of these effects have a custom text specific to the wiki and are noted with (HIDDEN) in the description. In particular area and monster effects may be hidden from the player.
+
+Modifiers can either be innately applied (as "implicit" modifier) to entities, be granted under specific conditions or randomly generated.
+
+Some specific circumstances like the rarity of a monster, being touched or possessed by a Tormented Spirit, etc can also apply modifiers innately without them being randomly generated.
+
+Modifier generation is gated by specific conditions that govern if and how likely a modifier is going to appear:
+
+Mod domain governs the type of entity the modifier is going to appear and may confer some specific rules (such as the number of affixes).
+Mod generation type determines how the modifier is generated, for example whether it's a prefix, suffix, corrupted or always applied (like on unique items)
+Mod level governs the minimum required level of the entity for a modifier to appear (i.e. the item level, monster level, area level), and for items only raises the item's level requirement to 80% of its value
+Mod group/family prevents other modifiers from the same family to be randomly generated on the same entity[1]
+Tags in conjunction with weights are used to further restrict the types of modifiers that can appear and set the relative chance to be randomly applied. (for example, shaper and elder get a corresponding tag)
+The values of stats include a minimum and maximum value, which is most commonly used on items - the actual value of the stat in the cases where minimum and maximum are not the same will be randomized within with equal chances, so for example a Stat with a minimum value of 1 and a maximum value of 3, can either be 1, 2 or 3 at 1/3 chance for each value.
+
+If a buff is specified, Modifiers also include a value for the buff, but unlike for Stats it is not randomized and fixed.
+
+If a skill is specified, the specified skill (at the specified level) will be granted to the relevant entity. The modifier does not include values for the skill other then the level as they're defined by the skill itself. Often this is found on items, where they grant skills, such as 
+
+The Whispering Ice
+ unique item.
+
+Local and global
+Modifiers can be categorized as "local" or "global" modifiers.
+
+Local
+The concept of "local" modifiers has broadened since its original technical definition[2]. This can be seen by the use of (local) in the trade site for modifiers that failed to meet the original criteria of just base stat modifications, like #% chance to Poison on Hit.
+
+Currently, local modifiers can be identified by fulfilling any of the following requirements:
+
+Item Properties: The modifier is unconditional and could affect innate properties of the item
+Hand-specific: The modifier explicitly states that it applies to the item, such as "with this Weapon"
+Weapon Hit Effect: The modifier is on a weapon and could apply on a hit with a generic weapon, unrelated to the numeric damage dealt
+Item Properties: Item properties encompass all default properties of an item, including its base stats, attribute and level requirements, and sockets and links. Base stats can be found at the top of the item's tooltip. For example, #% increased Attack Speed and Adds # to # Physical Damage on a weapon will modify the "Attacks per Second" and "Physical Damage" stat on the weapon itself. Certain stats may not be immediately obvious, as most base items have that stat's default value at 0. For example, Adds # to # Fire Damage on a 
+
+Solarine Bow
+ directly adds to the weapon's base damage, of which Fire Damage is usually 0 for weapons. Default base stats are displayed in white, while modified base stats are displayed in blue (with the exception of fire/cold/lightning/chaos damage on weapons, which are colour-coded based on their damage type and have a base stat of 0).
+
+Quality effects are always considered local as they affect an item's base stat(s). Catalyst quality effects are also local, which instead functions as #% increased X Modifier magnitudes modifiers, which are the only type of local modifier that can be found on jewellery (as jewellery only have implicit modifiers, level requirements, and sometimes sockets as base stats).
+The following is a list of local base stat modifiers which can be quickly identified as local, if unconditional (Note that this list does not cover all local mods, just local mods that affect base stats):
+Weapons: #% increased Physical Damage, Adds # to # X Damage, #% increased Attack Speed, #% increased Critical Strike Chance, +# metres to Weapon Range
+Any other type of #% increased Damage is never local, as generic weapons only have base Physical Damage.
+Armour: +# to Armour/Evasion Rating/maximum Energy Shield/Ward, #% increased Armour/Evasion/Energy Shield/Ward
+Shields: +# to Armour/Evasion Rating/maximum Energy Shield, #% increased Armour/Evasion/Energy Shield, +# to Block Chance
+Flasks: All flask modifiers are local
+Jewellery: Only #% increased X Modifier magnitudes (including Catalyst quality) and modifiers relating to level and sockets are local
+Maps: #% increased Item Quantity, #% increased Item Rarity, #% Monster Pack Size
+Hand-specific: Modifiers that include "with this Weapon" or "Main/Off Hand" should be considered local, despite being conditional, as they only apply to attacks using that specific hand/weapon. These types of modifiers are technically global modifiers that apply locally to one or both hand(s), and therefore cannot be scaled by other local increases[3].
+
+Weapons that add specific damage to the main or off-hand also display these values in their base stats as if combined, although they display correctly in the character stats screen (C by default) and skill tooltips as well as being correctly handled for Battlemage. Other main/off-hand stats like (50-100)% more Main Hand attack speed do not visually affect the base stats but are correctly reflected in the character stats screen. Two-handed weapons are always considered as being in the main hand (left), while shields are always considered in the off-hand (right).
+Weapon Hit Effect: Stats on weapons that apply on an attack hit with a generic (modifier-less) weapon (e.g. #% Chance to Poison on Hit, #% Chance to Maim, #% of Physical Attack Damage Leeched as Life) are considered local. Flat modifiers to accuracy or chance to hit on weapons are also considered local, as chance to hit is hand-specific and determined on hit. While Poison and Bleeding chance are local, Ignite chance is always global, as generic weapons do not have base fire damage and therefore cannot ignite.
+
+Global
+Global modifiers encompass all other modifiers that are not local. All conditional stats are global except for the main/off-hand stats listed above[4]. Global stats never modify an item's base stats and instead apply to the character's stats, and therefore cannot interact directly with other local modifiers. For example, the damage from Adds # to # Physical Damage on a weapon is scaled by #% increased Physical Damage and quality on a weapon, but Adds # to # Physical Damage to Attacks from the ring is not (as rings do not have base damage) and added separately in addition to the weapon's base damage before calculating any other global increased/more modifiers. Modifiers that state "Global" are always global.
+
+In general, conditional modifiers should always be considered global.
+
+Hybrid modifiers (modifiers with more than one line per stat) treat each line independently. A hybrid modifier can have both local and global parts, such as of Tacati - 30% chance to Poison on Hit, (26-30)% increased Chaos Damage (Suffix).
+
+Terminology
+In general modifiers are referred to as such, however there are many special cases of modifiers that correspond to specific sets and Modifiers#Conditions :
+
+Term	Explanation
+Implicit	Any innate modifier of an entity. Most commonly used in reference to items.
+On items, this is the effect above the line separating modifiers. They can also be replaced via certain effects such as corruption.
+
+Explicit	Any generated modifier of an entity that has a non-normal rarity (i.e. magic, rare or unique).
+May be randomized (such as prefixes, suffixes) or fixed (e.x. on unique items).
+
+Prefix	Refers to the "Prefix" generation type.
+On magic entities, these will have a name visible before the name of the entity itself. For example, Vicious on a 
+
+Broad Sword
+ will show as Vicious Broad Sword.
+
+Suffix	Refers to the "Suffix" generation type.
+On magic entities, these will have a name visible after the name of the entity itself. For example, of the Lynx on a 
+
+Broad Sword
+ will show as Broad Sword of the Lynx.
+
+Affix	Either a prefix or a suffix.
+Affixes are explicit modifiers that appear on magic and rare entities.
+
+Corruption	Refers to the "corrupted" generation type.
+Corruptions replace implicit modifiers. 
+
+Vaal Orb
+ is most commonly used to generate corrupted. See Corrupted for a list of modifiers for additional methods of obtaining.
+
+Enchantment	Refers to the "enchantment" generation type
+Enchantments use their own modifier slot to the item and will not replace implicit modifiers. Rings, amulets, and Blight uniques can be Anointed to add an enchantment. Weapons and body armour can be found with enchantments from Grand Heists, or added using a 
+
+Tempering Orb
+ or 
+
+Tailoring Orb
+; they can also be crafted with Harvest. Flasks can be enchanted by some harvest crafts, and utility flasks can be enchanted by using an 
+
+Instilling Orb
+ or 
+
+Enkindling Orb
+
+Crusader	Refers to Crusader influenced items, which have the "crusader" tag corresponding to the item class.
+Crusader items have an electric blue and red texture and a  symbol next to the item's name.
+
+Crusader prefixes are named "Crusader's" and suffixes "of the Crusade".
+
+Hunter	Refers to Hunter influenced items, which have the "basilisk" tag corresponding to the item class.
+Hunter items have a poisonous green outline and a  symbol next to the item's name.
+
+Hunter prefixes are named "Hunter's" and suffixes "of the Hunt".
+
+Redeemer	Refers to Redeemer influenced items, which have the "eyrie" tag corresponding to the item class.
+Redeemer items have a misty blue outline and a  symbol next to the item's name.
+
+Redeemer prefixes are named "Redeemer's" and suffixes "of Redemption".
+
+Warlord	Refers to Warlord influenced items, which have the "adjudicator" tag corresponding to the item class.
+Warlord items have a blazing yellow outline and a  symbol next to the item's name.
+
+Warlord prefixes are named "Warlord's" and suffixes "of the Conquest".
+
+Elder	Refers to Elder influenced items, which have the "elder" tag corresponding to the item class.
+Elder items have a tentacle background and a  symbol next to the item's name.
+
+Elder prefixes are named "Eldritch" and suffixes "of the Elder".
+
+Shaper	Refers to Shaper influenced items, which have the "shaper" tag corresponding to the item class.
+Shaper items have a cosmic background and a  symbol next to the item's name.
+
+Elder prefixes are named "The Shaper's" and suffixes "of Shaping".
+
+Delve	Refers to the "delve" mod domain from crafting with fossil and resonators.
+Note that most of these mods are spawn disabled due to version 3.10.0 changes. (exclusive mods from 
+
+Bloodstained Fossil
+ are removed in version 3.16.0).
+
+Delve prefixes are named "Subterranean" and suffixes "of the Underground". Note that in the Azurite Mine, there are drop-only mods that also use those mod names, but cannot be generated by fossil. These mods are not marked as "delve" mod domain.
+
+Veiled	Refers to Veiled mods, which are most commonly found on items dropped by Immortal Syndicate.
+Veiled items have a  symbol next to the item's name.
+
+Veiled prefixes are named "Chosen" and suffixes "of the Order". Veiled affixes exclusive to certain Syndicate members are named after the agent (Ex. of Craft, of Craft )
+
+Fractured	Refers to Fractured versions of base items. Fractured items have up to three permanently fixed mods that cannot be modified.
+Fractured items appear partially worn down and have a pale glow and a  symbol next to the item's name.
+
+Fractured items were exclusive to the Synthesis league. They can be found in other challenge leagues content like Heist and Delve.
+
+Synthesised	Refers to Synthesised versions of base items. Synthesised items have different implicit modifiers from the original base item, up to three.
+Synthesised items have a distorted blue glow and a  symbol next to the item's name.
+
+Non-unique Synthesised items were exclusive to the Synthesis league. They can be found in other challenge leagues content like Heist and Harvest, or from Synthesis Maps under certain circumstances.
+
+Eater	Refers to items with an Eater of Worlds implicit which have the "eaterofworlds" tag corresponding to the item class.
+Eater items have a pulsing blue texture and a  symbol next to the item's name.
+
+Eater implicits are named based upon the tier of eldritch implicit modifiers.
+
+Exarch	Refers to items with a Searing Exarch implicit which have the "searingexarch" tag corresponding to the item class.
+Exarch items have an orange blazing outline and a  symbol next to the item's name.
+
+Exarch implicits are named based upon the tier of eldritch implicit modifiers.
+
+Foulborn	Refers to unique items that have at least one Foulborn modifier.
+Foulborn uniques are covered in a purple substance and have a File:Foulborn-item-symbol.png symbol next to the item's name.
+
+Foulborn modifiers replace a specific modifier on normal versions of the unique item.
+
+Hybrid	Colloquially refers to modifiers that grant two or more different statistics in a single modifier.
+For example, generally these refer to modifiers such as #% increased Physical Damage, +# to Accuracy Rating", or modifiers named after Incursion architects.
+
+Examples
+A normal Goat's HornGoat's HornWand Physical Damage: 7-13 Critical Strike Chance: 8.00% Attacks per Second: 1.40Requires Level 6, 29 IntAdds (1-2) to (3-4) Fire Damage to Spells and Attacks with a increased Spell Damage implicit modifier.
+A normal 
+
+Goat's Horn
+ with a increased Spell Damage implicit modifier.
+
+ 
+Using an Orb of TransmutationOrb of TransmutationStack Size: 40Upgrades a normal item to a magic itemRight click this item then left click a normal item to apply it. upgraded the Goat's HornGoat's HornWand Physical Damage: 7-13 Critical Strike Chance: 8.00% Attacks per Second: 1.40Requires Level 6, 29 IntAdds (1-2) to (3-4) Fire Damage to Spells and Attacks to a magic item and added a prefix explicit modifier.
+Using an 
+
+Orb of Transmutation
+ upgraded the 
+
+Goat's Horn
+ to a magic item and added a prefix explicit modifier.
+
+ 
+Using an Orb of AugmentationOrb of AugmentationStack Size: 30Augments a magic item with a new random modifierRight click this item then left click a magic item to apply it. Magic items can have up to two random modifiers. added a suffix modifier.
+Using an 
+
+Orb of Augmentation
+ added a suffix modifier.
+
+ 
+Using a Regal OrbRegal OrbStack Size: 20Upgrades a magic item to a rare itemRight click this item then left click a magic item to apply it. Current modifiers are retained and a new one is added. upgraded it to rare item and added an additional suffix modifier.
+Using a 
+
+Regal Orb
+ upgraded it to rare item and added an additional suffix modifier.
+
+Types of modifiers
+Implicit modifiers
+Implicit modifier on items
+Implicit modifiers always spawn on entities before the addition or change of additional modifiers (for example by changing the rarity).
+
+On monsters, implicit modifiers can be very commonly found. For example, some monsters are granted damage conversion which converts their inherent damage to that of another element. However, on unique monsters and bosses implicits are most notable - for example most bosses are granted a boost to their item rarity and item quantity as well as other bonuses such as on Atziri.
+
+On items, visible implicit modifiers are most commonly found on:
+
+Rings
+Amulets
+Belts
+Quivers
+Most weapons
+Shields
+Specific body armour (Astral Plate, Assassin's Garb, Occultist's Vestment, and Carnal Armour)
+Atlas base items
+Ritual base items
+Maps sold by Commander Kirac or dropped with Shadow Shaping
+Grafts
+Shields and body armour also commonly have a hidden movement speed penalty modifier.
+
+Unlike the implicit modifiers on monsters, the implicit modifiers on equipment can be by altered in various ways:
+
+
+Blessed Orb
+ - rerolls the range of the stats found on the implicit modifiers.
+
+Vaal Orb
+ - Corruption can add or replace an implicit modifier depending on the item type.
+The Altar of Corruption in the Temple of Atzoatl can potentially give an item two corrupted implicit modifiers.
+Eldritch currency - Eldritch Ichors and Eldritch Embers will replace the item's implicit modifier with an Eater of Worlds implicit modifier or a Searing Exarch implicit modifier respectively, while retaining any Eldritch modifiers of the other type.
+Using a Resonator with a 
+
+Gilded Fossil
+ will add an Item sells for much more to vendors implicit to the item. This does not overwrite or affect the item's current implicit modifier.
+Synthesised items have up to three different random implicit modifiers, including on items that normally don't have an implicit modifier. You can transform an item into a synthesised item via Harvest crafting.
+Certain Harvest crafting options allowed you to set a new implicit modifier on jewels. These can now only be found on legacy items in permanent leagues.
+
+Unstable Implant
+ - either corrupts a graft and add a corrupted implicit modifier to it, or destroys it
+Certain unique items also have special interactions with implicits:
+
+
+Greatwolf Talisman
+ - has two randomly chosen talisman implicits.
+
+String of Servitude
+ - triples the effect values of implicit modifiers.
+Enchantments
+Enchantments are additional modifiers that can be added to items through specific means. Enchantments have their own mod slot on items and do not use the implicit mod slot.[5] Most items can have up to one enchantment at a time. Any level of rarity, even unique items, can be enchanted. Mirrored cannot receive an enchantment.[6] They are always fixed values, so 
+
+Blessed Orbs
+ have no effect on them.[7] Applying an enchantment on an already enchanted item replaces the old enchantment with the new one. Enchantments can be removed from a non-corrupted item using the Crafting Bench recipe; this cannot be done with maps and jewels. Corruption does not remove the enchantments of an item.
+
+Utility flasks can receive an enchantment from an 
+
+Instilling Orb
+ to add an effect that causes it to be automatically used when a certain condition is met, or an 
+
+Enkindling Orb
+ to give it an enchantment that greatly improves the flask, but prevent it from gaining charges during the effect.
+Rings, Amulets, and certain Blight-related uniques, as well as Blighted maps and Blight-ravaged maps, can be Anointed with Oils to give it an enchantment.
+Cluster Jewels have two (for small jewel and legacy medium and large jewels) or three enchantments: One that determines what stat the small passives gives (which determine what mods the jewel can roll), one that determines how many passive skills are in the cluster, and one that determines how many jewel sockets it has (for Large and Medium Cluster Jewels).
+Certain Harvest crafting options allows you to add enchantments to weapons, body armours and flasks. Read harvest crafting for details.
+Weapons and body armour with enchantments are possible rewards in Grand Heists. The enchantments can be added to an already existing armour or weapon by using 
+
+Tailoring Orb
+ or 
+
+Tempering Orb
+, respectively.
+Delirium orbs can be applied to maps to make it Delirious, adding a global Delirium effect and reward to it. Up to 5 Delirium orbs can be applied to a map (100% Delirious).
+Maps can occasionally drop with an enchantment that adds certain league mechanic encounters to the map.
+An 
+
+Orb of Intention
+ adds an enchantment to a memory influenced map that causes it to have less item quantity but causes equipment to drop with more memory strands. This enchantment can stack up to 3 times.
+Labyrinth Enchantments were obtained from the Divine Font at the end of the Labyrinth. Gloves, Boots, Helmets, and Belts could receive Labyrinth enchantments, depending on the difficulty. Labyrinth enchantments can no longer be acquired and can only be found on legacy items that already have one in permanent leagues.
+The Runesmithing Table in Kingsmarch allowed players to craft a Runesmithing enchantment on non-unique weapons by spending Runes. Runesmithing was only available during Settlers league and can no longer be acquired except from legacy items in permanent leagues.
+Scourge mods
+If an item becomes Scourged using the Blood Crucible, it gains two Scourge modifiers, one positive and one negative. Scourge mods are separate from implicit mods and enchantments. Blood Crucible upgrades can cause an item to gain additional Scourge mods. This mechanic has not been added to the core game and can only be found on legacy items in permanent leagues.
+
+Explicit modifiers
+Explicit modifiers are generally dynamically generated by changing the rarity of the entity or by other modification.
+
+The number of affixes given by rarity depends on the rarity class:
+
+Magic - random modifiers based on conditions: (0 to 1) prefix and (0 to 1) suffix
+Rare - random modifiers based on conditions: (1 to 3) prefixes and (1 to 3) suffixes (but always at least 3) with the exception of some items like jewels, which can only have (1 to 2) prefixes and (1 to 2) suffixes
+Unique - non-random, fixed modifiers based on the unique entity
+Monsters have different means of receiving modifiers:
+
+Magic packs of monsters spawn with one Monster modifier
+Rare monsters spawn with 2-4 Monster modifiers
+Normal and Magic monsters may be touched by a Tormented Spirit, giving a Torment 'Touch' modifier
+Rare and Unique monsters may be possessed by a Tormented Spirit, giving a Torment 'Possession' modifier
+Rare monsters trapped in an Essence can have an 'Essence' modifier
+Rare Beasts, which are found in Einhar missions, can have one or two Bestiary mods.
+Magic and Rare monsters receive a Delirium modifier during a Delirium encounter; they are removed when the encounter is over
+Picking up a Talisman gives monsters a Talisman modifier (Talisman league only as well as specific Delve node that contains a Talisman-possessed monster)
+On items, modifiers can be changed by spending currency:
+
+
+Divine Orb
+ rerolls the value of any stats on explicit modifiers on the item
+
+Tainted Divine Teardrop
+ randomly increases or decreases a modifier's tier on a corrupted item by one
+
+Orb of Scouring
+, 
+
+Orb of Transmutation
+, 
+
+Orb of Alchemy
+, 
+
+Orb of Binding
+, 
+
+Orb of Chance
+, 
+
+Regal Orb
+, and 
+
+Ancient Orb
+ may be used to alter the rarity of an item (adding/removing mods in the process)
+
+Orb of Horizons
+ and 
+
+Harbinger's Orb
+ will give the newly created map different modifiers.
+
+Tainted Chaos Orb
+ can either reroll a corrupted item's modifiers or remove all its modifiers and turn it into a Normal rarity item
+
+Tainted Mythic Orb
+ can either transform a corrupted item into a Unique item or destroy it
+
+Orb of Alteration
+ and 
+
+Chaos Orb
+ may be used to re-roll the modifiers on Magic and Rare items respectively
+
+Orb of Augmentation
+ and 
+
+Exalted Orb
+ may be used to add a random modifier on Magic and Rare items respectively
+
+Eldritch Exalted Orb
+ adds a prefix or suffix modifier on a Rare item depending on its Eldritch implicit modifiers
+
+Vaal Orb
+ has a chance to change the rarity or create maps with 8 Modifiers
+
+Orb of Annulment
+ removes a random modifier from an item
+
+Eldritch Orb of Annulment
+ removes a prefix or suffix modifier on a Rare item depending on its Eldritch implicit modifiers
+
+Tainted Exalted Orb
+ can either add or remove a random modifier from a corrupted item
+
+Fracturing Orb
+ turns an item into a fractured item and permanently locks one of its modifiers
+
+Reflecting Mist
+ multiplies each explicit mod values on a Rare jewelry by 1.4-2.5x then may turn it into an inverted modifier, then creates a copy of the item with opposite values
+Certain sources can drop items with special explicit modifiers not found on standard items:
+
+Influenced items can roll additional modifiers not found on regular items.
+A non-influenced item without synthesised, fractured, or eldritch implicit mods can have an influenced Exalted Orb applied to it to turn it into an influenced item with an influenced mod.
+An 
+
+Orb of Dominance
+ will remove a random influenced modifier to upgrade the tier of another influenced modifier; tier 1 influenced mods will turn into an elevated modifier.
+Essences rerolls the explicit mods of an item with a guaranteed Essence affix.
+Veiled items have a modifier can be unveiled to turn it into one of three random veiled mods of choosing.
+
+Veiled Chaos Orb
+ and 
+
+Veiled Exalted Orb
+ will reforge all mods or remove a modifier to add a veiled modifier to an item.
+Veiled items dropped by Immortal Syndicate members can have an exclusive veiled modifier as one of its options.
+Some unique items have veiled mods exclusive to the item.
+The Temple of Atzoatl and the Grand Dreams Vaal side area can provide an item with an Incursion mod as a reward.
+The Azurite Mine can contain items that drop with an exclusive Delve modifier.
+Certain item bases like 
+
+Grasping Mail
+ can generate exclusive modifiers.
+Warband bosses can drop items with a signature Warbands mod.
+The Necropolis can craft an item with Haunted modifiers from corpses that add a chance for an item to generate with one.
+Infamous Mercenaries may be equipped with items with an Infamous modifier.
+Areas may receive modifiers depending on how they were created unlike items, monsters or strongboxes:
+
+Vaal side areas spawn with random Vaal side area modifiers
+Areas created with Map items receive the modifiers on the map they were created with
+Areas created through a Map device may receive mods from placing map fragments in the device
+The current league(s) or other server-wide effects (from races for example)
+With Tempest active in the area, the area may receive a tempest modifier
+Conditions
+Modifiers usually include conditions which are used to determine how they appear. These are generally used to govern the creation of explicit modifiers on entities.
+
+Domain
+The domain of a modifier specifies what kind of game object it applies to. The domains are primarily reverse engineered, as detailed information has been removed from the game files.
+
+Id	Type	Description
+1	Item	The mod is generated on most types of items
+2	Flask	The mod is generated on flasks
+3	Monster	The mod is generated on monsters
+4	Strongbox	The mod is generated on strongboxes
+5	Area	The mod is generated on maps, vaal side areas, Maven's Invitations, Eldritch's Invitations and expedition logbook
+6	Unused	
+7	Relic	The mod is generated on relics
+8	Unused	
+9	Crafted	The mod is generated by crafting bench through bench crafting, including unlocked veiled modifier
+10	Jewel	The mod is generated on jewels
+11	Atlas	The mod is generated by Sextants (No longer in game)
+12	Leaguestone	The mod is generated by leaguestones (No longer in game)
+13	Abyss Jewel	The mod is generated by abyss jewels.
+14	Map Device	The mod is generated as map crafting option
+16	Delve Fossil	The mod is generated by Fossils (with some disabled, see version 3.10.0 patch notes).
+17	Delve Area	The mod is generated on Azurite Mine areas
+18	Synthesis Area	The mod is generated on Synthesis unique map, due to the map item mod Map has # additional random Modifiers; used to be part of Synthesis instance building mechanic; these typically are modifiers that affect monsters or players
+19	Synthesis Area (Global)	The mod is generated on Synthesis unique map, due to the map item mod Map has # additional Synthesis Global Modifiers; used to be part of Synthesis instance building mechanic; these typically are reward or area modifiers
+20	Synthesis	The mod is generated as an implicit modifier on synthesised items
+21	Cluster Jewel	The mod is generated on Cluster Jewels
+22	Heist Area	The mod is generated on Contracts and Blueprints
+23	Heist Gear	The mod is generated on Rogue's equipment
+24	Trinket	The mod is generated on Thief's Trinket
+25	Watchstone	The mod is generated on craftable Watchstone (No longer in game)
+26	Veiled modifier	The mod is generated on item that drops from the Immortal Syndicate
+27	Expedition Remnants	The mod is generated on Remnants which affect Expedition monsters
+28	Unveiled modifier	The mod is generated on item that drops from the Immortal Syndicate and unveiled by Jun
+29	Eldritch Altar	The mod is generated as monsters or players augmentations from Eldritch Altars in maps influence by the Searing Exarch or the Eater of Worlds
+30	Sentinel	The mod is generated on Sentinels
+31	Memory	The mod is generated on Atlas Memory items
+32	Sanctified Relic	The mod is generated on Sanctified Relics (No longer in game)
+33	Crucible area	The mod is generated on 
+
+Primeval Remnants
+ and 
+
+Primordial Remnants
+ (No longer in game)
+34	Tincture	The mod is generated on tinctures
+35	Charm	The mod is generated on charms (No longer in game)
+36	Necropolis Monster	The mod is generated on monsters haunted by spirits in Necropolis league
+37	Idol	The mod is generated on idols
+38	Graft	The mod is generated on grafts
+Generation type
+The mod generation determines "how" the mod will be created on an item. The generation types are primarily reverse engineered, as detailed information has been removed from the game files.
+
+Id	Type	Description
+1	Prefix	The mod is generated as prefix, for example Item Prefix.
+2	Suffix	The mod is generated as suffix, for example Item Suffix.
+3	Intrinsic	The mod is given directly to the relevant entity and not generated normally. Implicit modifiers use this generation type, as do explicit modifiers on uniques.
+4	Nemesis	The mod is a Nemesis mod.
+5	Corrupted	The mod is a Corrupted mod and is given to the item upon corruption.
+6	Bloodlines	The mod is a Bloodlines mod.
+7	Torment	The mod is a Torment mod.
+8	Tempest	The mod is a Tempest mod.
+9	Talisman	The mod is a Talisman monster mod.
+10	Enchantment	The mod is a mod granted by Enchantment.
+11	Essence	The mod is a mod granted by Essences.
+12	Unused	
+13	Bestiary	This mod is a Bestiary monster mod.
+14	Delve	Used for delve areas.
+15	Synthesis unknown	
+16	Synthesis Globals	Synthesis global area mod. Now only used on Synthesis unique maps
+17	Synthesis Bonus	
+18	Blight	
+19	Blight Tower	
+20	Monster Affliction	This mod is a Delirium monster mod.
+21	Enkindling Orb	This mod is an enchantment for flasks from 
+
+Enkindling Orb
+s.
+22	Instilling Orb	This mod is an enchantment for flasks from 
+
+Instilling Orb
+s.
+23	Expedition Logbook	This mod is a Expedition Logbook mod.
+24	Scourge Benefit	This mod is a Scourge upside mod.
+25	Scourge Detriment	This mod is a Scourge downside mod.
+26	Scourge Gimmick	
+27	Unused	
+28	Searing Exarch	This mod is generated from Eldritch Ember currency. (28 was used by Archnemesis in version 3.17; Searing Exarch was 29)
+29	Eater of Worlds	This mod is generated from Eldritch Ichor currency. (Eater of Worlds was 30 during version 3.17)
+30	Archnemesis	This mod relates to "God-touched" Archnemesis modifiers
+31	Crucible Passive Skill Tree	This mod is generated as part of a Crucible passive tree
+32	Crucible Passive Skill Tree Mutation	This mod is generated only through mutation of the Crucible passive tree using a Forge of the Titans
+33	Affliction Wisps	This mod is applied to monsters that are empowered by Affliction wisps
+34	Necropolis Downside	This modifier affects haunted monsters in Necropolis league. It is a "downside" mod that adds difficulty to the encounter.
+35	Necropolis Upside	This modifier affects devoted monsters in Necropolis league. It is an "upside" mod that adds rewards to the encounter.
+36	Memory Altar	
+Mod Level
+The required level of the relevant entity. For example, this can be the required item level or a monster level.
+
+However, there are cases where this is not respected: in particular this is the case for any mods that are directly given to other entities, such as implicit mods including enchantments or monsters with innate mods.
+
+The mod level is also a factor in calculating the level requirement of items; raising the level requirement up to 80% requirement of the mod (with the requirement rounded down to the nearest whole integer). In particular this is the case for mods on unique items and for enchantments
+
+For example, 
+
+Seven-League Step
+ normally has a level requirement of 1, however after adding a legacy 0.5% of Damage Leeched as Life if you've Killed Recently enchantment from the Labyrinth its level requirement increases to 
+⌈
+66
+×
+0.8
+⌉
+=
+52
+\color [rgb]{0.6392156862745098,0.5529411764705883,0.42745098039215684}\left\lceil {66\times 0.8}\right\rceil =52.
+
+Group/family
+Each modifier belongs to one or more groups (or families). These restrict which modifiers may appear on an object together.[1] Only one modifier from any given group may appear on an object; in other words, all modifiers belonging to a group are mutually exclusive with one another.
+
+This is often used used to influence the crafting of items, where players will add a mod from an undesired group of modifiers to block it. This means the undesired mods in that group will not be added when crafting currency is used. Together with the item level requirements, this creates the "tiered" system of modifiers.
+
+Tags
+Mods use the internal Tag system to determine on which entities they can appear and how likely they are to appear on entities. Tags are classified as spawn weight tag and mod tag:
+
+Spawn weight tag
+Spawn weight tag primarily functions like this:
+
+Find the Tags on the basetype.
+Match the Tags against the mod's list of tags.
+For the found mods get the associated spawn weighting of the tag.
+If the spawn weighting is zero, discard the mod, otherwise use it.
+If multiple tags apply, the left-most tags are most important, where the right most tags are the least.
+So, for example:
+
+
+Glorious Plate
+ has the tags str_armour • top_tier_base_item_type • body_armour • armour • default.
+
+Assassin's Garb
+ has the tags dex_armour • top_tier_base_item_type • body_armour • armour • default.
+The mod Impregnable has the spawn weights .
+Result for 
+
+Glorious Plate
+: The mod can spawn because it has the tag str_armour and a positive spawn weight.
+Result for 
+
+Assassin's Garb
+: The mod can not spawn because only default matches and its spawn weight is 0.
+Mod tag
+Mods can be found tagged with mod tags. A non-exhaustive list can be found below. Some mods do not have any tags. These tags can interact with Catalysts, Fossils, Harvest crafting, and Heist enchantments.
+
+In the table below, the tags on the top row have associated Harvest crafts. As a result, they also have associated tag colours. The tags on the bottom row have neither.
+
+Lightning	Cold	Fire	Physical	Chaos	Life	Caster	Attack	Speed
+Elemental	Resource	Mana	Damage	Gem	Attribute	Bleed	Poison	Ailment	Aura	Curse	Defences	Minion	Critical	Drop
+Metamods
+The metamods of Spellcraft - Cannot roll Attack Modifiers (Suffix) and of Weaponcraft - Cannot roll Caster Modifiers (Suffix) can interact with Harvest crafting, 
+
+Exalted Orbs
+, 
+
+Orbs of Annulment
+, and the beastcrafting recipes "Add a Suffix, Remove a Random Prefix" (Farric Lynx Alpha) and "Add a Prefix, Remove a Random Suffix" (Farric Wolf Alpha).
+
+For example, when an Exalted Orb is used on an item with the of Spellcraft, the Exalted Orb cannot add modifiers with the "Attack" tag. Similarly, when an Orb of Annulment is used on an item with the of Weaponcraft modifier, it will not remove any modifiers with the "Caster" tag.
+
+This behaviour is specific to Orbs of Annulment. The metamod does not protect mods from removal when used with other crafts that remove a single modifier, such as beastcrafting, Harvest, or Veiled Orb.
+Some crafting methods ignore or cannot be used with metamods. 
+
+Awakener's Orb
+s[8] ignore them. Essences[9] and resonators socketed with fossils may not be used on items with metamods.
+
+Catalyst
+Quality applied to jewellery, such as rings, belts, and amulets, can only be applied with Catalysts. Each type of Catalyst will apply a different type of quality which increases magnitudes of modifiers with the tags associated with the quality type.
+
+For example, when a 
+
+Fertile Catalyst
+ is applied to jewellery, it will apply a quality that increases the magnitude of modifiers with the Life or Mana tags, up to 20%. A modifier normally granting "+79 to Maximum Life" on the item will be enhanced to instead grant "+94 to Maximum Life", and a modifier normally granting "Non-Channelling Skills have -7 to Total Mana Cost" will be enhanced to instead grant "Non-Channelling Skills have -8 to Total Mana Cost". Modifiers enhanced this way will round down decimal values.
+
+Fossils multiply the weights of modifiers that match the type of the fossil, For example, 
+
+Metallic Fossil
+s will multiply the weight of modifiers with the Lightning tag by 1000%, and the modifiers with Physical tags by 0%. Effectively, this will result in modifiers with the lightning tag to appear 10x more oftenwhen the item is rolled, and modifiers with the physical tag never rolling.
+
+Heist Enchantments
+Many heist-exclusive enchantments can modify the magnitudes of modifiers of certain tags, both positively and negatively. These enchantments can be acquired either through the use of a 
+
+Tailoring Orb
+ on a body armour, use of a 
+
+Tempering Orb
+ on a weapon, or found already rolled as an item in a Curio Display at the end of a Blueprint wing. (All Grand Heist layouts with "Enchanted Rare Body Armour" and "Enchanted Rare Weapon" as a reward type).
+
+For example, the enchantment 8% increased Explicit Life Modifier magnitudes will enhance a modifier that normally grants "+100 to Maximum Life" to granting "+108 to Maximum Life". Some Heist enchantments come with downsides. The hybrid modifier 10% increased Explicit Life Modifier magnitudes + 25% reduced Explicit Speed Modifier magnitudes will increase the magnitudes of modifiers with the Physical tags by 10%, but reduce the magnitudes of modifiers with the Speed tag, such as 19% increased Attack Speed by 25%.
+
+Harvest Crafting
+Many Harvest crafting methods interact with modifier tags.
+
+The craft "Reforge a Rare item with random modifiers, including a (tag) modifier" will completely reforge the modifiers of a Rare item, similar to a 
+
+Chaos Orb
+, while guaranteeing a modifier with the specified tag. If there are no valid tags in the mod pool to roll for the selected item, the craft cannot be used. The add/remove crafts work as expected.
+
+The craft "Change a modifier that grants (Element) Resistance into a similar-tier modifier that grants (Different Element) Resistance" will swap a resistance modifier of a certain element into that of another one.
+
+This method works for modifiers beyond the generic "+#% to (Element) Resistance". It also works for the incursion architect-exclusive resistance-granting modifiers. For example, the modifier of Puhuarte - +(46-48)% to Cold Resistance, (30-50)% increased Damage with Hits against Chilled Enemies (Suffix) can be reforged into of Puhuarte - +(46-48)% to Fire Resistance, (45-52) to (75-78) added Fire Damage against Burning Enemies (Suffix) and vice versa. This can be used to swap to another, more desired mod, or to effectively "divine" the modifier. This is generally more desirable than with the normal resistance rolls, as modifiers with "(30–50)% increased Damage with Hits against Chilled Enemies" have much higher roll variance and thus more value can be obtained.
+This craft preserves the tier, but not the roll within that tier. This property may be used to reroll a higher value intentionally, by switching back and forth between your desired element and another one. Each time you switch back to the type that you want, the modifier values will be re-rolled. This method is recommended for builds with high levels of investment, as usually a few % of resistance is not worth spending the lifeforce.
+Modifier Tier Rating
+Modifier Tier Rating is a mechanic first introduced in Necropolis league's gravecrafting that is able to prevent low tier modifiers from rolling. The exact mechanics are not fully known, however there are two popular models that may explain how this system works.
+
+Redistribution model
+The more popular explanation is that it can block low tier modifiers without directly affecting the relative weight of mod types during mod generation. Unlike fossils, which act like a multiplier to the weights of certain modifier types (e.g. 10x weight for Fire modifiers), modifier tier rating prevents a percentage of eligible mod tiers within each mod type, exclusive, rounded up to the nearest whole number[10]:
+
+M
+T
+R
+%
+=
+1
+−
+(
+100
+/
+(
+x
++
+100
+)
+)
+\color [rgb]{0.6392156862745098,0.5529411764705883,0.42745098039215684}{MTR\%}=1-(100/(x+100)) where 
+x
+\color [rgb]{0.6392156862745098,0.5529411764705883,0.42745098039215684}x = total added Modifier Tier Rating.
+
+With +50 to Modifier Tier Rating, it will prevent the lowest 34% of mod tiers from rolling. With +100, the lowest 50%, and +200, the lowest 67%, and so on. The weights of the blocked modifiers are redistributed to the tiers of modifiers of the same mod type[11], such that the relative weights within a mod type remain the same, and the relative weights for each mod type against the total pool of prefixes/suffixes remain the same. Modifiers with only a single (eligible) tier are unaffected by modifier tier rating.
+
+For example, assume a modifier type (e.g. the prefix #% increased Fire Damage) has three tiers that can roll at the item's item level, with Tiers 3/2/1 having weights of 1000/600/200 respectively. With a modifier tier rating of +100, preventing the lowest 50% tier modifiers from rolling, exclusive, this prevents Tier 3 from rolling and redistributes the weight of 1000 to the other eligible tiers. The weights of Tiers 3/2/1 are now 0/1350/450 respectively. Tier 2 is still 3x more likely to roll than Tier 1, and chance of rolling any increased Fire Damage prefix versus any other prefix modifier type is still the same with a total weight of 1800.
+
+In simpler terms, this system forces modifiers to roll with higher tiers without affecting the chance to roll a specific type of modifier. It will can be used to more easily obtain lower weight modifiers with multiple tiers (e.g. Merciless) but does not make very rare single tier modifiers (e.g. Magister's) any more likely to roll.
+
+Modifier Tier Rating breakpoints to guarantee a Tier 1 modifier of a given mod type
+Total eligible tiers	+Modifier Tier Rating required
+1	0
+2	97
+3	195
+4	285
+5	377
+6	489
+7	567
+8	670
+9	734
+10	810
+11	901
+12	1012
+13	1151
+14	1151
+15	1329
+Refactored weight model
+It has been noted that Model 1, though generally accepted, does not match certain data sets[12], particularly in cases where the weights of different tier modifiers differ (e.g. #% increased Physical Damage has a weight of 1000 for T8-6, but higher tiers have consecutively lower weights, down to a weight of 25 for T1.
+
+To account for this, an alternative model uses the same formula to determine the number of modifiers to block:
+
+M
+T
+R
+%
+=
+1
+−
+(
+100
+/
+(
+x
++
+100
+)
+)
+\color [rgb]{0.6392156862745098,0.5529411764705883,0.42745098039215684}{MTR\%}=1-(100/(x+100)) where 
+x
+\color [rgb]{0.6392156862745098,0.5529411764705883,0.42745098039215684}x = total added Modifier Tier Rating.
+
+However, instead of distributing the weight of the blocked tiers, the weights of the remaining tiers are multiplied based on the number of total and remaining tiers instead[13]:
+
+n
+e
+w
+w
+e
+i
+g
+h
+t
+=
+o
+l
+d
+w
+e
+i
+g
+h
+t
+∗
+o
+r
+i
+g
+i
+n
+a
+l
+t
+i
+e
+r
+s
+r
+e
+m
+a
+i
+n
+i
+n
+g
+t
+i
+e
+r
+s
+\color [rgb]{0.6392156862745098,0.5529411764705883,0.42745098039215684}{newweight}={oldweight}*{\frac {originaltiers}{remainingtiers}}
+
+For example, with increased Physical Damage has 8 tiers. T2 has a weight of 50, and T1 has a weight of 25. T8 to T1 has a total weight of 3775. By blocking 6 tiers, T2 has a new weight of 200, and T1 has a new weight of 100, for a total weight of 300.
+
+In this model, the total weight of each mod type *is* affected, thus resulting in differences in the chance to roll each modifier type as modifier tier rating increases.
+
+Version history
+Expand
+Version	Changes
+3.26.0	
+Weapons and Armour with multiple Attribute Requirements now have a lower chance to roll Attribute modifiers.
+3.19.0	
+Fixed a bug where Recombinators were ignoring modifier families in certain situations.
+3.15.2	
+Added crafting bench recipes for adding a specific Enchantment to a Flask. There are recipes for all of the possible Enchantments obtained through Instilling Orbs. These recipes are unlocked alongside the Rank 3 Movement Speed crafting option in Oriath (and will already be unlocked for you if you have obtained the Rank 3 Movement Speed crafting option in that league).
+Added a crafting bench recipe to remove Enchantments from an item. This recipe does not need to be unlocked and is always available.
+3.12.0	
+Item modifier tags have been entirely reworked with a goal in mind of consistency and simplicity. These changes have negligible impacts to the odds of various modifiers appearing on rare items naturally, but may have impacts to the results of certain crafting methods. A list of all modifiers and their associated tags can be found here.
+As a result of the above changes, several fossil descriptions have changed slightly.
+3.11.0	
+Fixed several modifiers that didn't have names.
+0.10.0	
+There is several mod balance in this patch which was the start of open beta. Read version 0.10.0 for all the changes.
+0.9.3	
+Implicit mods on items now do not stop explicit mods of the same type being spawned. For example, a wand with built-in "+10% Spell Damage" can now get an additional random spell damage mod generated.
+Disabled the item mods that added three stats related to a single weapon type.
+0.9.0	
+Split the armour percentage mods into multiple mod series (one of which can get decreased stun duration).
+0.8.7	
+*Added support for items having mods that increase the level of gems of a certain type socketed into them.
+0.8.6	
+Rebalanced all item mods.
+0.8.5	
+Required level of a mod is now 80% of the generation level.
+0.8.3	
+Added rare item prefixes/suffixes for remaining item types.
+Mods on rares are now slightly biased towards the lower half of their ranges. They can still get the same values as magic, just slightly less often.
+Reduced size of accuracy mods.
+0.8.1	
+Nerfed some implicit mods on items such as cast speed.
+0.8.0	
+Fixed a bug that could cause multiple mods of the same family to be generated on an item.
+0.7.1	
+Increased spell damage mods now work.
+Reduced amounts of elemental damage increase, spell damage and area of effect on mods and passive skills.
+0.5.13	
+Prevented implicit mods spawning again as explicit mods.
+0.5.3	
+Set up initial item mods.
+0.5.1	
+Fixed a bug where items that had mods would be deleted when a player leaves game.
+Fixed tag affinity stuff for item mods.
+See also
+List of item modifiers
+Category:Mods
+Category:Mod lists
+Memory strand
+Crucible Passive Skill Tree
+References
+ Mark_GGG (September 25, 2018). "PoEDB does not have a listed mod subset for additional mines/trap and mine damage mod, but metallic or corroded seem to block it.". Path of Exile subreddit. Retrieved July 6, 2019.
+ Mark_GGG (January 30, 2013). "Local vs Global modifiers". Official Path of Exile Forums. Retrieved August 21, 2016.
+ https://www.reddit.com/r/pathofexile/comments/7jskkg/comment/dr9juk4/
+ https://www.reddit.com/r/pathofexile/comments/7jskkg/comment/dr9igxg/
+ Bex_GGG (March 6, 2019). "Synthesis Patch Notes". Path of Exile Forums. Retrieved March 13, 2019.
+ Bex_GGG (February 24, 2016). "Ascendancy Enchantments". Path of Exile subreddit. Retrieved February 24, 2016.
+ Bex_GGG (February 23, 2016). "Ascendancy Enchantments". Official Path of Exile Forums. Retrieved February 24, 2016.
+ See Version 3.9.1b
+ Chris (August 22, 2016). "Essence Metamod Crafting". Retrieved October 16, 2020publisher=Official Path of Exile Forums.
+ https://www.reddit.com/r/pathofexile/comments/1c4iojk/comment/kzo105k/
+ https://www.reddit.com/r/pathofexile/comments/1cl77om/mod_weights_with_rating_why_craftexilepoedb_is/
+ https://www.reddit.com/r/pathofexile/comments/1cl77om/comment/l2uc3ip/
+ https://www.reddit.com/r/pathofexile/comments/1cl77om/comment/nlyyuut/
+vte
+Item modifiers
+One-handed weapons	
+One-handed axesClawsDaggersRune daggersOne-handed macesSceptresOne-handed swordsThrusting swordsWandsMinion wands
+Two-handed weapons	
+Two-handed axesBows (Quivers)Two-handed macesStavesWarstavesTwo-handed swordsFishing rods
+Body armours	
+Body armours (str)Body armours (dex)Body armours (int)Body armours (str/dex)Body armours (str/int)Body armours (dex/int)Body armours (str/dex/int)
+Helmets	
+Helmets (str)Helmets (dex)Helmets (int)Helmets (str/dex)Helmets (str/int)Helmets (dex/int)Helmets (runic)
+Gloves	
+Gloves (str)Gloves (dex)Gloves (int)Gloves (str/dex)Gloves (str/int)Gloves (dex/int)Gloves (runic)
+Boots	
+Boots (str)Boots (dex)Boots (int)Boots (str/dex)Boots (str/int)Boots (dex/int)Boots (runic)
+Shields	
+Shields (str)Shields (dex)Shields (int)Shields (str/dex)Shields (str/int)Shields (dex/int)Minion shields
+Jewellery	
+AmuletsBeltsRingsUnset RingMinion rings
+Flasks and Tinctures	
+Life flasksMana flasksHybrid flasksUtility flasksIron FlaskTinctures
+Jewels	
+Crimson JewelViridian JewelCobalt JewelPrismatic JewelMurderous Eye JewelSearching Eye JewelHypnotic Eye JewelGhastly Eye JewelLarge Cluster JewelMedium Cluster JewelSmall Cluster Jewel
+Maps	
+Maps (low tier)Maps (mid tier)Maps (high tier)
+Heist	
+Contracts and blueprintsRogue's equipment
+Sentinel	
+Stalker SentinelsPandemonium SentinelsApex Sentinels
+Sanctum	
+Relic (small)Relic (medium)Relic (large)
+Legacy of Phrecia	
+Idols (small)Idols (medium)Idols (large)Idols (very large)
+Other	
+Crafting BenchEnchantmentsStrongboxes
+Categories: ModifiersGame mechanicsDevelopment information
+Navigation menu
+Create account
+Log in
+PageDiscussionPath of Exile 2 Wiki
+ReadView sourceHistory
+Search Path of Exile Wiki
+Main page
+Community portal
+Recent changes
+Random article
+Wiki Discord
+PoE Links
+Official
+Trade
+Forums
+Websites
+Apps
+PoE2 Wiki
+Tools
+What links here
+Related changes
+Special pages
+Printable version
+Permanent link
+Page information
+Page values
+This page was last edited on 25 November 2025, at 20:48.
+Content is available under Creative Commons Attribution-NonCommercial 3.0 Unported unless otherwise noted.
+Privacy policyAbout Path of Exile WikiDisclaimers
+Creative Commons Attribution-NonCommercial 3.0 UnportedPowered by MediaWiki
