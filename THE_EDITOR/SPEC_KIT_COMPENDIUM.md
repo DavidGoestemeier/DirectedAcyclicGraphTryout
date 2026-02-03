@@ -1,5 +1,10 @@
 # DAG Editor V3 - Spec Kit Information Compendium
 
+## 📌 Scope & Rules
+
+- **ALL CODE MUST BE BUILT IN** `THE_EDITOR/`
+- Existing C++ project is **reference only** (no edits outside THE_EDITOR)
+
 ## 🎯 Project Vision
 
 **ONE SENTENCE PITCH:**
@@ -28,7 +33,7 @@ A visual DAG editor where game designers can create complex attribute systems by
 - **State:** Zustand (lightweight, simple)
 - **UI Library:** shadcn/ui
 - **Build Tool:** Vite
-- **Desktop Wrapper:** Tauri (optional, later)
+- **Target:** **Web app first** (desktop wrapper later, optional)
 
 ### Backend
 - **Core:** Existing C++ DAG system
@@ -40,7 +45,7 @@ A visual DAG editor where game designers can create complex attribute systems by
 - React Flow handles 90% of node editor complexity
 - TypeScript prevents runtime errors
 - Zustand is simpler than Redux
-- Tauri adds desktop packaging without Electron bloat
+- Web-first keeps iteration fastest
 
 ---
 
@@ -57,12 +62,19 @@ A visual DAG editor where game designers can create complex attribute systems by
 - [ ] Select nodes (click)
 - [ ] Multi-select (Ctrl+click, box select)
 
-#### Node Types (Start with 5)
+#### Node Types (All in first build)
 - [ ] StatNode (base value)
 - [ ] DerivedNode (calculated from parents)
 - [ ] ConditionalNode (if/then logic)
 - [ ] CapNode (min/max limits)
 - [ ] ModifierNode (flat/increased/more)
+- [ ] PerXNode (per charge/stack)
+- [ ] ThresholdNode (breakpoints)
+- [ ] RangeNode (min-max random)
+- [ ] AccumulatorNode (sum multiple sources)
+- [ ] ConversionNode (damage type conversion)
+- [ ] ChanceNode (probability/proc)
+- [ ] ToggleNode (on/off state)
 
 #### Properties
 - [ ] Properties panel (right sidebar)
@@ -90,7 +102,7 @@ A visual DAG editor where game designers can create complex attribute systems by
 - [ ] Store last 100 actions
 - [ ] Clear on save (optional)
 
-#### Backend Integration
+#### Backend Integration (Immediate)
 - [ ] Connect to C++ backend via WebSocket
 - [ ] Send graph on change (debounced 300ms)
 - [ ] Receive calculated values
@@ -127,14 +139,8 @@ A visual DAG editor where game designers can create complex attribute systems by
 - [ ] Drag template onto canvas
 - [ ] Built-in templates (common patterns)
 
-#### Advanced Nodes (Add 7 more)
-- [ ] PerXNode (per charge/stack)
-- [ ] ThresholdNode (breakpoints)
-- [ ] RangeNode (min-max random)
-- [ ] AccumulatorNode (sum multiple sources)
-- [ ] ConversionNode (damage type conversion)
-- [ ] ChanceNode (probability/proc)
-- [ ] ToggleNode (on/off state)
+#### Advanced Nodes
+- [ ] Included in Tier 1 (see above)
 
 #### Item System Integration
 - [ ] Create Item (gives tags + modifiers)
@@ -203,6 +209,9 @@ A visual DAG editor where game designers can create complex attribute systems by
 - **Purple:** Modifiers
 - **Red:** Invalid/error state
 - **Gray:** Disabled/inactive
+
+### Theme
+- **Dark theme only (Blender-style)**
 
 ### Connection Rules
 - **Solid line:** Active connection
