@@ -1,0 +1,61 @@
+# Clang-Format Configuration for DAG RPG System
+# Based on Google C++ Style with adjustments for readability
+
+BasedOnStyle: Google
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+
+# Braces
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortBlocksOnASingleLine: Never
+
+# Indentation
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
+NamespaceIndentation: None
+
+# Pointer alignment
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# Spacing
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeCpp11BracedList: false
+SpaceInEmptyParentheses: false
+
+# Line breaks
+AlwaysBreakTemplateDeclarations: Yes
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+
+# Comments
+ReflowComments: true
+AlignTrailingComments: true
+
+# Includes
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '^".*\.h"'
+    Priority:        1
+  - Regex:           '^<.*\.h>'
+    Priority:        2
+  - Regex:           '^<.*'
+    Priority:        3
+  - Regex:           '.*'
+    Priority:        4
+
+# Access modifiers
+AccessModifierOffset: -4
+
+# Pack constructor initializers
+PackConstructorInitializers: CurrentLine

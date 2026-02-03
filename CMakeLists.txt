@@ -3,6 +3,13 @@ cmake_minimum_required(VERSION 3.16)
 project(DAG_RPG_System VERSION 1.0.0 LANGUAGES CXX)
 
 # ═══════════════════════════════════════════════════════════════
+# Options
+# ═══════════════════════════════════════════════════════════════
+option(ENABLE_TESTING "Enable unit testing" ON)
+option(ENABLE_COVERAGE "Enable code coverage" OFF)
+option(BUILD_EXAMPLES "Build example applications" ON)
+
+# ═══════════════════════════════════════════════════════════════
 # C++ Standard Configuration
 # ═══════════════════════════════════════════════════════════════
 set(CMAKE_CXX_STANDARD 20)
@@ -42,6 +49,23 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(json)
 
 # ═══════════════════════════════════════════════════════════════
+# Fetch Google Test (if testing is enabled)
+# ═══════════════════════════════════════════════════════════════
+if(ENABLE_TESTING)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.14.0
+    )
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+
+    enable_testing()
+    include(GoogleTest)
+endif()
+
+# ═══════════════════════════════════════════════════════════════
 # Include Directories
 # ═══════════════════════════════════════════════════════════════
 include_directories(${CMAKE_SOURCE_DIR}/include)
@@ -63,8 +87,24 @@ target_link_libraries(dag_rpg_system PRIVATE
 # ═══════════════════════════════════════════════════════════════
 if(MSVC)
     target_compile_options(dag_rpg_system PRIVATE /W4 /WX-)
+    if(ENABLE_COVERAGE)
+        # MSVC code coverage is complex, recommend using OpenCppCoverage or similar tools
+        message(STATUS "Code coverage on MSVC: Use OpenCppCoverage or VS Enterprise")
+    endif()
 else()
     target_compile_options(dag_rpg_system PRIVATE -Wall -Wextra -Wpedantic)
+    if(ENABLE_COVERAGE)
+        target_compile_options(dag_rpg_system PRIVATE --coverage -fprofile-arcs -ftest-coverage)
+        target_link_libraries(dag_rpg_system PRIVATE --coverage)
+    endif()
+endif()
+
+# ═══════════════════════════════════════════════════════════════
+# Unit Tests
+# ═══════════════════════════════════════════════════════════════
+if(ENABLE_TESTING)
+    message(STATUS "Enabling unit tests")
+    add_subdirectory(tests)
 endif()
 
 # ═══════════════════════════════════════════════════════════════
@@ -86,11 +126,13 @@ install(FILES index.html DESTINATION bin)
 # Print Configuration Summary
 # ═══════════════════════════════════════════════════════════════
 message(STATUS "")
-message(STATUS "╔═══════════════════════════════════════════════════════════╗")
-message(STATUS "║         DAG RPG Attribute System - Build Config           ║")
-message(STATUS "╠═══════════════════════════════════════════════════════════╣")
-message(STATUS "║  C++ Standard:    C++${CMAKE_CXX_STANDARD}")
-message(STATUS "║  Build Type:      ${CMAKE_BUILD_TYPE}")
-message(STATUS "║  Output Dir:      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-message(STATUS "╚═══════════════════════════════════════════════════════════╝")
+message(STATUS "===============================================================")
+message(STATUS "         DAG RPG Attribute System - Build Config              ")
+message(STATUS "===============================================================")
+message(STATUS "  C++ Standard:    C++${CMAKE_CXX_STANDARD}")
+message(STATUS "  Build Type:      ${CMAKE_BUILD_TYPE}")
+message(STATUS "  Output Dir:      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+message(STATUS "  Testing:         ${ENABLE_TESTING}")
+message(STATUS "  Coverage:        ${ENABLE_COVERAGE}")
+message(STATUS "===============================================================")
 message(STATUS "")

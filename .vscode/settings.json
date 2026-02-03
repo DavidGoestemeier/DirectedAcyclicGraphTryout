@@ -1,15 +1,125 @@
 {
+    // ═══════════════════════════════════════════════════════════
+    // C++ Configuration
+    // ═══════════════════════════════════════════════════════════
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/include",
-        "${workspaceFolder}/build/_deps/json-src/include"
+        "${workspaceFolder}/build/_deps/json-src/include",
+        "${workspaceFolder}/build/_deps/googletest-src/googletest/include",
+        "${workspaceFolder}/build/_deps/googletest-src/googlemock/include"
     ],
     "C_Cpp.default.compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/bin/Hostx64/x64/cl.exe",
     "C_Cpp.default.cppStandard": "c++20",
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.intelliSenseMode": "windows-msvc-x64",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+    // ═══════════════════════════════════════════════════════════
+    // CMake Configuration
+    // ═══════════════════════════════════════════════════════════
+    "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build",
-    "cmake.configureOnOpen": true,
+    "cmake.installPrefix": "${workspaceFolder}/install",
+    "cmake.configureSettings": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+    },
+    // ═══════════════════════════════════════════════════════════
+    // Formatting Configuration
+    // ═══════════════════════════════════════════════════════════
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    // ═══════════════════════════════════════════════════════════
+    // Testing Configuration
+    // ═══════════════════════════════════════════════════════════
+    "cmake.ctest.parallelJobs": 0,
+    "testExplorer.useNativeTesting": true,
+    "testExplorer.onStart": "reset",
+    // ═══════════════════════════════════════════════════════════
+    // Code Coverage Configuration
+    // ═══════════════════════════════════════════════════════════
+    "coverage-gutters.coverageFileNames": [
+        "lcov.info",
+        "cov.xml",
+        "coverage.xml",
+        "jacoco.xml",
+        "coverage.json"
+    ],
+    "coverage-gutters.showLineCoverage": true,
+    "coverage-gutters.showRulerCoverage": true,
+    "coverage-gutters.highlightdark": "rgba(255, 100, 100, 0.3)",
+    "coverage-gutters.highlightlight": "rgba(255, 100, 100, 0.2)",
+    // ═══════════════════════════════════════════════════════════
+    // File Settings
+    // ═══════════════════════════════════════════════════════════
     "files.associations": {
         "*.h": "cpp",
         "*.cpp": "cpp"
+    },
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.encoding": "utf8",
+    "files.eol": "\n",
+    "files.exclude": {
+        "**/build": true,
+        "**/.cache": true,
+        "**/*.user": true
+    },
+    "files.watcherExclude": {
+        "**/build/**": true,
+        "**/node_modules/**": true
+    },
+    // ═══════════════════════════════════════════════════════════
+    // Git Settings
+    // ═══════════════════════════════════════════════════════════
+    "git.ignoreLimitWarning": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    // ═══════════════════════════════════════════════════════════
+    // C++ TestMate (Google Test Integration)
+    // ═══════════════════════════════════════════════════════════
+    "testMate.cpp.test.executables": "build/bin/**/*{test,Test,TEST}*",
+    "testMate.cpp.test.workingDirectory": "${workspaceFolder}",
+    "testMate.cpp.debug.configTemplate": {
+        "type": "cppvsdbg",
+        "linux": {
+            "type": "cppdbg",
+            "MIMode": "gdb"
+        },
+        "darwin": {
+            "type": "cppdbg",
+            "MIMode": "lldb"
+        },
+        "win32": {
+            "type": "cppvsdbg"
+        }
+    },
+    "testMate.cpp.log.logpanel": true,
+    "testMate.cpp.discovery.loadOnStartup": true,
+    "testMate.cpp.discovery.gracePeriodForMissing": 10,
+    // ═══════════════════════════════════════════════════════════
+    // Terminal Settings
+    // ═══════════════════════════════════════════════════════════
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.scrollback": 10000,
+    // ═══════════════════════════════════════════════════════════
+    // Language Specific
+    // ═══════════════════════════════════════════════════════════
+    "[markdown]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        }
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[cmake]": {
+        "editor.tabSize": 4
     }
 }

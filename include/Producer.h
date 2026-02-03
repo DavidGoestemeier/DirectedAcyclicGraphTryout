@@ -1,6 +1,6 @@
 /**
  * Producer.h - Game Objects that Produce Modifiers
- * 
+ *
  * Demonstrates the "Multi-Target Producer Pattern":
  * - Items: Apply modifiers on Equip(), remove on Unequip()
  * - Auras: Add tags and modifiers when active
@@ -27,11 +27,11 @@ class GraphManager;
 class IProducer {
 public:
     virtual ~IProducer() = default;
-    
+
     virtual const std::string& GetId() const = 0;
     virtual const std::string& GetName() const = 0;
     virtual bool IsActive() const = 0;
-    
+
     virtual void Activate(GraphManager& graph) = 0;
     virtual void Deactivate(GraphManager& graph) = 0;
 };
@@ -40,7 +40,7 @@ public:
 // Item - Equipment that applies modifiers to multiple stats
 // ═══════════════════════════════════════════════════════════════
 
-class Item : public IProducer {
+class Item :  public IProducer {
 public:
     using Ptr = std::shared_ptr<Item>;
 
@@ -62,10 +62,10 @@ private:
     std::string m_name;
     Slot m_slot;
     bool m_isEquipped = false;
-    
+
     // Modifiers this item provides
     std::vector<Modifier::Ptr> m_modifiers;
-    
+
     // Tags this item grants when equipped
     std::vector<GameplayTag> m_grantedTags;
 
@@ -82,8 +82,8 @@ public:
      * Add a modifier to this item
      * Example: .AddModifier("attackSpeed", ModifierType::Increased, 0.15)
      */
-    Item& AddModifier(const std::string& targetStat, 
-                      ModifierType type, 
+    Item& AddModifier(const std::string& targetStat,
+                      ModifierType type,
                       double value,
                       const std::string& description = "") {
         auto mod = std::make_shared<Modifier>(
@@ -165,10 +165,10 @@ private:
     bool m_isActive = false;
     double m_duration = -1.0;  // -1 = permanent
     TimePoint m_activatedAt;
-    
+
     // Tags this aura grants while active
     std::vector<GameplayTag> m_grantedTags;
-    
+
     // Modifiers active while aura is up
     std::vector<Modifier::Ptr> m_modifiers;
 
@@ -248,7 +248,7 @@ enum class DamageType {
     Cold,
     Lightning,
     Chaos,
-    
+
     COUNT
 };
 
@@ -284,22 +284,22 @@ public:
      * Record damage taken - pushes to the appropriate history node
      */
     static void TakeDamage(GraphManager& graph, double amount, DamageType type);
-    
+
     /**
      * Record damage dealt
      */
     static void DealDamage(GraphManager& graph, double amount, DamageType type);
-    
+
     /**
      * Record a critical hit (for "crit recently" mechanics)
      */
     static void TriggerCrit(GraphManager& graph);
-    
+
     /**
      * Record a block
      */
     static void TriggerBlock(GraphManager& graph);
-    
+
     /**
      * Record an enemy kill
      */
